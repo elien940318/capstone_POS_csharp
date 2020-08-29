@@ -1,0 +1,19 @@
+﻿<Button x:Class="WindowsPos.View.CustomButton"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:WindowsPos.View"
+        Margin="1" FontWeight="SemiBold" Foreground="Orange" Background="#0A1B2A">
+    <Button.Template>
+        <ControlTemplate TargetType="Button">
+            <Border CornerRadius="5" Background="{TemplateBinding Background}" BorderBrush="#ccc" BorderThickness="0,0,1,1">
+                <ContentPresenter x:Name="contentPresenter" 
+                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                  Margin="{TemplateBinding Padding}" 
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  Content="{TemplateBinding Content}"/>
+            </Border>
+        </ControlTemplate>
+    </Button.Template>
+</Button>

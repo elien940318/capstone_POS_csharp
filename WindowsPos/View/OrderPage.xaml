@@ -1,0 +1,399 @@
+﻿<Page x:Class="WindowsPos.View.OrderPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:src="clr-namespace:WindowsPos"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="800"
+      Title="OrderPage" Margin="20" Background="#545d6a">
+    <Page.Resources>
+        <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Button Content="Button" Style="{DynamicResource ButtonStyle2}"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True"/>
+                            <Trigger Property="IsDefaulted" Value="True"/>
+                            <Trigger Property="IsMouseOver" Value="True"/>
+                            <Trigger Property="IsPressed" Value="True"/>
+                            <Trigger Property="IsEnabled" Value="False"/>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ButtonStyle2" TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <UniformGrid x:Name="MenuTitleGrid" Columns="5" Rows="2">
+                            <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                            <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                            <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                            <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                            <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                            <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                            <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                            <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                            <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+
+                        </UniformGrid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True"/>
+                            <Trigger Property="IsDefaulted" Value="True"/>
+                            <Trigger Property="IsMouseOver" Value="True"/>
+                            <Trigger Property="IsPressed" Value="True"/>
+                            <Trigger Property="IsEnabled" Value="False"/>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="Button" x:Key="ButtonOption">
+            <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="1"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="Orange"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="5" Background="#0A1B2A" BorderBrush="#ccc" BorderThickness="0,0,2,2" >
+                            <ContentPresenter x:Name="contentPresenter" 
+                                            ContentTemplate="{TemplateBinding ContentTemplate}" 
+                                            Content="{TemplateBinding Content}" 
+                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                            Margin="{TemplateBinding Padding}" 
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition  Width="*"/>
+            <ColumnDefinition  Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                       Grid.Row="0" Grid.Column="0">
+
+            <DataGrid DockPanel.Dock="Top" Background="AliceBlue" x:Name="orderList"
+                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                      AutoGenerateColumns="False" ItemsSource="{Binding }">
+                <DataGrid.Resources>
+                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                        <Setter Property="Background" Value="#0A1B2A"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="BorderThickness" Value="0,0,1,2"/>
+                        <Setter Property="BorderBrush" Value="Black"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        <Setter Property="Foreground" Value="Orange"/>
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="상품명"    Width="3*" IsReadOnly="True" Binding="{Binding pro_name}"/>
+                    <DataGridTextColumn Header="수량"      Width="*"  IsReadOnly="True" Binding="{Binding sale_count}"/>
+                    <DataGridTextColumn Header="총금액"    Width="2*" IsReadOnly="True" Binding="{Binding sale_totprc}"/>
+                    <DataGridTextColumn Header="할인금액"  Width="2*" IsReadOnly="True" Binding="{Binding sale_discount}"/>
+                    <DataGridTextColumn Header="주문시간"  Width="3*" IsReadOnly="True" Binding="{Binding sale_datetime}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            
+            <!--
+            <src:CustomLineGrid DockPanel.Dock="Top" Margin="0,20,0,0" Background="AliceBlue" ShowGridLines="True"
+                                x:Name="orderList" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <src:CustomLineGrid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </src:CustomLineGrid.RowDefinitions>
+                <src:CustomLineGrid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="3*"/>
+                </src:CustomLineGrid.ColumnDefinitions>
+                <src:CustomLineGrid.Resources>
+                    <Style TargetType="Label" x:Key="LabelOption">
+                        <Setter Property="Foreground" Value="Orange"/>
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+                </src:CustomLineGrid.Resources>
+                <Border Grid.Row="0" Grid.ColumnSpan="5" Background="#0A1B2A"/>
+                <Border Grid.Row="1" Background="#0A1B2A"/>
+                <Border Grid.Row="2" Background="#0A1B2A"/>
+                <Border Grid.Row="3" Background="#0A1B2A"/>
+                <Border Grid.Row="4" Background="#0A1B2A"/>
+                <Border Grid.Row="5" Background="#0A1B2A"/>
+                <Border Grid.Row="6" Background="#0A1B2A"/>
+                <Border Grid.Row="7" Background="#0A1B2A"/>
+
+                <Label Style="{StaticResource LabelOption}" Grid.Row="0" Grid.Column="0" Content="*"/>
+                <Label Style="{StaticResource LabelOption}" Grid.Row="0" Grid.Column="1" Content="상품명"/>
+                <Label Style="{StaticResource LabelOption}" Grid.Row="0" Grid.Column="2" Content="수량"/>
+                <Label Style="{StaticResource LabelOption}" Grid.Row="0" Grid.Column="3" Content="금액"/>
+                <Label Style="{StaticResource LabelOption}" Grid.Row="0" Grid.Column="4" Content="할인금액"/>
+                
+                <Label Style="{StaticResource LabelOption}" Grid.Row="1" Grid.Column="0" Content="1"/>
+                <Label Style="{StaticResource LabelOption}" Grid.Row="2" Grid.Column="0" Content="2"/>
+                <Label Style="{StaticResource LabelOption}" Grid.Row="3" Grid.Column="0" Content="3"/>
+                <Label Style="{StaticResource LabelOption}" Grid.Row="4" Grid.Column="0" Content="4"/>
+                <Label Style="{StaticResource LabelOption}" Grid.Row="5" Grid.Column="0" Content="5"/>
+                <Label Style="{StaticResource LabelOption}" Grid.Row="6" Grid.Column="0" Content="6"/>
+                <Label Style="{StaticResource LabelOption}" Grid.Row="7" Grid.Column="0" Content="7"/>
+            </src:CustomLineGrid>
+            -->
+            
+            <Grid DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <Grid.Resources>
+                    <Style TargetType="Button" x:Key="ButtonOption">
+                        <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                        <Setter Property="Margin" Value="1"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="Foreground" Value="Orange"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border CornerRadius="5" Background="#0A1B2A" BorderBrush="#ccc" BorderThickness="0,0,1,1" >
+                                        <ContentPresenter x:Name="contentPresenter" 
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}" 
+                                                  Content="{TemplateBinding Content}" 
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                  Margin="{TemplateBinding Padding}" 
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Grid.Resources>
+
+                <Button Grid.Row="1" Grid.Column="0" Style="{StaticResource ButtonOption}">
+                    <Label>
+                        <TextBlock Foreground="Orange">
+                    전체<LineBreak/>취소
+                        </TextBlock>
+                    </Label>
+                </Button>
+                <Button Grid.Row="1" Grid.Column="1" Style="{StaticResource ButtonOption}">
+                    <Label>
+                        <TextBlock Foreground="Orange">
+                    선택<LineBreak/>취소
+                        </TextBlock>
+                    </Label>
+                </Button>
+                <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource ButtonOption}">
+                    <Label>
+                        <TextBlock Foreground="Orange">
+                    할인<LineBreak/>적용
+                        </TextBlock>
+                    </Label>
+                </Button>
+                <Button Grid.Row="1" Grid.Column="3" Style="{StaticResource ButtonOption}" Content="수량 +"/>
+                <Button Grid.Row="1" Grid.Column="4" Style="{StaticResource ButtonOption}" Content="수량 -"/>
+                <Button Grid.Row="1" Grid.Column="5" Style="{StaticResource ButtonOption}" Content="↑"/>
+                <Button Grid.Row="1" Grid.Column="6" Style="{StaticResource ButtonOption}" Content="↓"/>
+            </Grid>
+
+        </DockPanel>
+
+
+
+        <Grid Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid  Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0" Background="AliceBlue">
+                    <Grid ShowGridLines="True">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Row="0" Grid.Column="0" Background="#FF88BCEA" BorderBrush="#0A1B2A" BorderThickness="1">
+                            <TextBlock FontSize="15" Foreground="#0A1B2A" FontWeight="Bold" 
+                VerticalAlignment="Center" HorizontalAlignment="Center" Text="총 금 액"/>
+                        </Border>
+                        <Border Grid.Row="1" Grid.Column="0" Background="#FF88BCEA" BorderBrush="#0A1B2A" BorderThickness="1,0">
+                            <TextBlock FontSize="15" Foreground="#0A1B2A" FontWeight="Bold"
+                VerticalAlignment="Center" HorizontalAlignment="Center" Text="할인금액"/>
+                        </Border>
+                        <Border Grid.Row="2" Grid.Column="0" Background="#FF88BCEA" BorderBrush="#0A1B2A" BorderThickness="1">
+                            <TextBlock FontSize="15" Foreground="Orange" FontWeight="Bold"
+                VerticalAlignment="Center" HorizontalAlignment="Center" Text="받을금액"/>
+                        </Border>
+
+
+                        <Label x:Name="txtPrice" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
+                        <Label x:Name="txtDiscountPrice" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
+                        <Label x:Name="txtTotalPrice" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
+                    </Grid>
+                </Border>
+                
+                <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" FontWeight="Bold"  Content="현금&#10;결제" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="Auto" Width="Auto"/>
+                    <Button Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="Auto" Width="Auto">
+                        <Image Source="/image/logo_kakao.png" 
+                               Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Path=ActualWidth}"
+                               Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Path=ActualHeight}"/>
+                    </Button>
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="5,3" BorderBrush="#CEE3F6" BorderThickness="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <TextBox Name="btnKeyValue" Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center" 
+                            HorizontalContentAlignment="Right" 
+                            FontSize="14"/>
+                    </Border>
+
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey7" Grid.Row="1" Grid.Column="0" Content="7"/>
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey8" Grid.Row="1" Grid.Column="1" Content="8"/>
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey9" Grid.Row="1" Grid.Column="2" Content="9"/>
+
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey4" Grid.Row="2" Grid.Column="0" Content="4"/>
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey5" Grid.Row="2" Grid.Column="1" Content="5"/>
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey6" Grid.Row="2" Grid.Column="2" Content="6"/>
+
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey1" Grid.Row="3" Grid.Column="0" Content="1"/>
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey2" Grid.Row="3" Grid.Column="1" Content="2"/>
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey3" Grid.Row="3" Grid.Column="2" Content="3"/>
+
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey0" Grid.Row="4" Grid.Column="0" Content="0"/>
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey00" Grid.Row="4" Grid.Column="1" Content="00"/>
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKeyClr" Grid.Row="4" Grid.Column="2" Content="CLR"/>
+
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKeyBackspc" Grid.Row="5" Grid.Column="0" Content="&lt;" />
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKeyEnter" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Content="Enter" />
+
+                </Grid>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <UniformGrid Grid.Row="0" Rows="2" Margin="0,20" Columns="5" x:Name="MenuCategoryGrid">
+                <Button Style="{StaticResource ButtonOption}" Content="튀김안주"/>
+                <Button Style="{StaticResource ButtonOption}" Content="마른안주"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+            </UniformGrid>
+
+
+            <UniformGrid Grid.Row="1" Rows="5" Margin="0,20" Columns="5" x:Name="MenuListGrid">
+                <Button Style="{StaticResource ButtonOption}" Content="먹태구이"/>
+                <Button Style="{StaticResource ButtonOption}" Content="노가리"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+            </UniformGrid>
+
+
+            <UniformGrid Grid.Row="2" Rows="2" Margin="0,20" Columns="5" x:Name="ButtonListGrid">
+                <Button Style="{StaticResource ButtonOption}" Content="주문"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
+                <Button Style="{StaticResource ButtonOption}" Content="닫기" Click="ButtonCloseOnClick"/>
+            </UniformGrid>
+        </Grid>
+
+    </Grid>
+</Page>
