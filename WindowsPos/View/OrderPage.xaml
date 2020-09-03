@@ -86,9 +86,8 @@
         <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                        Grid.Row="0" Grid.Column="0">
 
-            <DataGrid DockPanel.Dock="Top" Background="AliceBlue" x:Name="orderList"
-                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                      AutoGenerateColumns="False" ItemsSource="{Binding }">
+            <DataGrid DockPanel.Dock="Top" Background="AliceBlue" x:Name="orderList" SelectionMode="Single" CanUserAddRows="false"
+                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding }" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" CanUserResizeRows="False">
                 <DataGrid.Resources>
                     <Style TargetType="{x:Type DataGridColumnHeader}">
                         <Setter Property="Background" Value="#0A1B2A"/>
