@@ -94,18 +94,23 @@ namespace WindowsPos.View
                 var ID = new MySqlParameter("@usr_id", MainSystem.GetInstance._member.Id);
                 command.Parameters.Add(ID);
 
-                using (MySqlDataReader reader = command.ExecuteReader())
-                {
-                    // 테이블리스트
-                    List<Table> tablelist = new List<Table>();
+                DataTable dt = new DataTable();
+                dt.Load(command.ExecuteReader());
 
-                    // seat_no | seat_xpos | seat_ypos | usr_id | seat_totprc 
-                    while (reader.Read()) 
-                    { 
-                        tablelist.Add(new Table((int)reader["seat_no"], (int)reader["seat_xpos"], (int)reader["seat_ypos"]));
-                    }
-                    MainSystem.GetInstance.SetTableList(tablelist);
-                }
+                MainSystem.GetInstance.SetTableList(dt);
+
+                //using (MySqlDataReader reader = command.ExecuteReader())
+                //{
+                //    // 테이블리스트
+                //    List<Table> tablelist = new List<Table>();
+
+                //    // seat_no | seat_xpos | seat_ypos | usr_id | seat_totprc 
+                //    while (reader.Read()) 
+                //    { 
+                //        tablelist.Add(new Table((int)reader["seat_no"], (int)reader["seat_xpos"], (int)reader["seat_ypos"]));
+                //    }
+                //    MainSystem.GetInstance.SetTableList(tablelist);
+                //}
             }
             catch (Exception exc)
             {
@@ -113,33 +118,33 @@ namespace WindowsPos.View
             }
         }
 
-        private void GetOrderList()
-        {
-            try
-            {
-                //| seat_no | seat_xpos | seat_ypos | usr_id | seat_totprc |
-                string query = "SELECT seat_no, seat_xpos, seat_ypos FROM seat WHERE usr_id=@usr_id;";
-                MySqlCommand command = new MySqlCommand(query, connection);
-                var ID = new MySqlParameter("@usr_id", MainSystem.GetInstance._member.Id);
-                command.Parameters.Add(ID);
+        //private void GetOrderList()
+        //{
+        //    try
+        //    {
+        //        //| seat_no | seat_xpos | seat_ypos | usr_id | seat_totprc |
+        //        string query = "SELECT seat_no, seat_xpos, seat_ypos FROM seat WHERE usr_id=@usr_id;";
+        //        MySqlCommand command = new MySqlCommand(query, connection);
+        //        var ID = new MySqlParameter("@usr_id", MainSystem.GetInstance._member.Id);
+        //        command.Parameters.Add(ID);
 
-                using (MySqlDataReader reader = command.ExecuteReader())
-                {
-                    // 테이블리스트
-                    List<Table> tablelist = new List<Table>();
+        //        using (MySqlDataReader reader = command.ExecuteReader())
+        //        {
+        //            // 테이블리스트
+        //            List<Table> tablelist = new List<Table>();
 
-                    // seat_no | seat_xpos | seat_ypos | usr_id | seat_totprc 
-                    while (reader.Read())
-                    {
-                        tablelist.Add(new Table((int)reader["seat_no"], (int)reader["seat_xpos"], (int)reader["seat_ypos"]));
-                    }
-                    MainSystem.GetInstance.SetTableList(tablelist);
-                }
-            }
-            catch (Exception exc)
-            {
-                MessageBox.Show(exc.ToString());
-            }
-        }
+        //            // seat_no | seat_xpos | seat_ypos | usr_id | seat_totprc 
+        //            while (reader.Read())
+        //            {
+        //                tablelist.Add(new Table((int)reader["seat_no"], (int)reader["seat_xpos"], (int)reader["seat_ypos"]));
+        //            }
+        //            MainSystem.GetInstance.SetTableList(tablelist);
+        //        }
+        //    }
+        //    catch (Exception exc)
+        //    {
+        //        MessageBox.Show(exc.ToString());
+        //    }
+        //}
     }
 }

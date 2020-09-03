@@ -51,6 +51,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
         <Style TargetType="Button" x:Key="ButtonOption">
             <Setter Property="TextBlock.TextAlignment" Value="Center"/>
             <Setter Property="Margin" Value="1"/>
@@ -71,6 +72,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
     </Page.Resources>
 
     <Grid>
@@ -87,7 +89,8 @@
                        Grid.Row="0" Grid.Column="0">
 
             <DataGrid DockPanel.Dock="Top" Background="AliceBlue" x:Name="orderList" SelectionMode="Single" CanUserAddRows="false"
-                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding }" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" CanUserResizeRows="False">
+                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding }" AutoGenerateColumns="False" 
+                      CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" CanUserResizeRows="False">
                 <DataGrid.Resources>
                     <Style TargetType="{x:Type DataGridColumnHeader}">
                         <Setter Property="Background" Value="#0A1B2A"/>
@@ -340,43 +343,10 @@
             </Grid.RowDefinitions>
 
             <UniformGrid Grid.Row="0" Rows="2" Margin="0,20" Columns="5" x:Name="MenuCategoryGrid">
-                <Button Style="{StaticResource ButtonOption}" Content="튀김안주"/>
-                <Button Style="{StaticResource ButtonOption}" Content="마른안주"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
             </UniformGrid>
 
 
             <UniformGrid Grid.Row="1" Rows="5" Margin="0,20" Columns="5" x:Name="MenuListGrid">
-                <Button Style="{StaticResource ButtonOption}" Content="먹태구이"/>
-                <Button Style="{StaticResource ButtonOption}" Content="노가리"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
-                <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
             </UniformGrid>
 
 

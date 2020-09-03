@@ -27,44 +27,6 @@ namespace WindowsPos.View
         public TablePage()
         {
             InitializeComponent();
-
-
-            MySqlConnection connection;
-
-            using (connection = new MySqlConnection(
-                "Server=175.200.94.253;Port=3306;Database=capstone;Uid=capstone;Pwd=capstone"))
-            {
-                try
-                {
-                    connection.Open();
-                    
-                    foreach (Model.Table tbl in MainSystem.GetInstance._tablelist)
-                    {
-                        //| seat_no | seat_xpos | seat_ypos | usr_id | seat_totprc |
-                        string query = "select c.pro_name, b.sale_count, b.sale_totprc, b.sale_discount from seat a join (sale b join product c on b.pro_code = c.pro_code) on a.seat_no = b.seat_no and a.seat_no=@seat_no;";
-                        MySqlDataAdapter adapter = new MySqlDataAdapter();
-                        MySqlCommand command = new MySqlCommand(query, connection);
-                        var tableNum = new MySqlParameter("@seat_no", tbl.TableNum);
-                        command.Parameters.Add(tableNum);
-                        adapter.SelectCommand = command;
-                        DataSet ds = new DataSet();
-                        adapter.Fill(ds);
-
-                        TableButton tblbtn = new TableButton(tbl.TableNum, ds);
-
-                        Canvas.SetLeft(tblbtn, tbl.XPos);
-                        Canvas.SetTop(tblbtn, tbl.YPos);
-                        DesigningCanvas.Children.Add(tblbtn);
-
-                        tblbtn.Click += Tblbtn_Click;
-                    }
-                    connection.Close();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                }
-            }
         }
 
         private void Tblbtn_Click(object sender, RoutedEventArgs e)
@@ -78,5 +40,43 @@ namespace WindowsPos.View
             this.NavigationService.GoBack();
         }
 
+        private void TablePageOnLoad(object sender, RoutedEventArgs e)
+        {
+            MySqlConnection connection;
+
+            using (connection = new MySqlConnection(
+                "Server=175.200.94.253;Port=3306;Database=capstone;Uid=capstone;Pwd=capstone"))
+            {
+                try
+                {
+                    connection.Open();
+
+                    foreach (DataRow tbl in MainSystem.GetInstance._tablelist.Rows)
+                    {
+                        //| seat_no | seat_xpos | seat_ypos | usr_id | seat_totprc |
+                        string query = "select c.pro_name, b.sale_count, b.sale_totprc, b.sale_discount from seat a join (sale b join product c on b.pro_code = c.pro_code) on a.seat_no = b.seat_no and a.seat_no=@seat_no;";
+                        MySqlCommand command = new MySqlCommand(query, connection);
+                        var tableNum = new MySqlParameter("@seat_no", tbl[0]);
+                        command.Parameters.Add(tableNum);
+
+                        DataTable dt = new DataTable();
+                        dt.Load(command.ExecuteReader());
+
+                        TableButton tblbtn = new TableButton(Int32.Parse(tbl[0].ToString()), dt);
+
+                        Canvas.SetLeft(tblbtn, Double.Parse(tbl[1].ToString()));
+                        Canvas.SetTop(tblbtn, Double.Parse(tbl[2].ToString()));
+                        DesigningCanvas.Children.Add(tblbtn);
+
+                        tblbtn.Click += Tblbtn_Click;
+                    }
+                    connection.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+            }
+        }
     }
 }

@@ -11,22 +11,30 @@ namespace WindowsPos.View
 {
     public partial class OrderPage : Page
     {
+        public int TableNum { get; set; }
         int cnt;
         int price;
         int discprice;
 
+        DataTable dtOrderlist;
+        MySqlConnection connection;
+
+        string connStr = "Server=175.200.94.253;Port=3306;Database=capstone;Uid=capstone;Pwd=capstone";
+        
+        
         public OrderPage()
         {
             InitializeComponent();
         }
+
         public OrderPage(TableButton btn) : this()
         {
             cnt = 0;
             price = 0;
             discprice = 0;
+            TableNum = btn.TableNum;
 
-
-            using (MySqlConnection connection = new MySqlConnection("Server=175.200.94.253;Port=3306;Database=capstone;Uid=capstone;Pwd=capstone"))
+            using (connection = new MySqlConnection(connStr))
             {
                 try
                 {
@@ -34,7 +42,92 @@ namespace WindowsPos.View
 
                     //| seat_no | seat_xpos | seat_ypos | usr_id | seat_totprc |
                     string query = "select c.pro_name, b.sale_count, b.sale_totprc, b.sale_discount, DATE_FORMAT(b.sale_time, '%H:%i:%s') sale_datetime " +
-                        "from seat a join (sale b join product c on b.pro_code = c.pro_code) on a.seat_no = b.seat_no and a.seat_no=" + btn.TableNum + ";";
+                        "from seat a join (sale b join product c on b.pro_code = c.pro_code) on a.seat_no = b.seat_no and a.seat_no=" + TableNum + ";";
+
+                    //MySqlDataAdapter adapter = new MySqlDataAdapter(query, connection);
+                    MySqlCommand command = new MySqlCommand(query, connection);
+                    dtOrderlist = new DataTable();
+
+                    dtOrderlist.Load(command.ExecuteReader());
+                    orderList.DataContext = dtOrderlist.DefaultView;
+
+                    
+
+
+
+
+                    query = "SELECT * FROM category";
+
+                    command = new MySqlCommand(query, connection);
+                    DataTable dtCat = new DataTable();
+
+                    dtCat.Load(command.ExecuteReader());
+
+                    foreach (DataRow drRow in dtCat.Rows)
+                    {
+                        Button tempBtn = new Button();
+                        tempBtn.Content = drRow[1].ToString();
+                        tempBtn.Style = Resources["ButtonOption"] as Style;
+                        tempBtn.Click += CategoryButtonOnClick;
+                        MenuCategoryGrid.Children.Add(tempBtn);
+                    }
+                    for (int i = 0; i < 10 - dtCat.Rows.Count; i++)
+                    {
+                        Border border = new Border();
+                        border.Background = Brushes.AliceBlue;
+                        border.CornerRadius = new CornerRadius(5);
+                        border.Margin = new Thickness(2);
+                        MenuCategoryGrid.Children.Add(border);
+                    }
+
+
+
+
+
+                    query = "SELECT * FROM product WHERE cat_code = " + dtCat.Rows[0][0] + ";";
+                    command = new MySqlCommand(query, connection);
+                    DataTable dtMenu = new DataTable();
+                    dtMenu.Load(command.ExecuteReader());
+
+                    foreach (DataRow drRow in dtMenu.Rows)
+                    {
+                        Button tempBtn = new Button();
+                        tempBtn.Content = drRow[1].ToString();
+                        tempBtn.Style = Resources["ButtonOption"] as Style;
+                        MenuListGrid.Children.Add(tempBtn);
+                    }
+                    for (int i = 0; i < 25 - dtMenu.Rows.Count; i++)
+                    {
+                        Border border = new Border();
+                        border.Background = Brushes.AliceBlue;
+                        border.CornerRadius = new CornerRadius(5);
+                        border.Margin = new Thickness(2);
+                        MenuListGrid.Children.Add(border);
+                    }
+
+
+                    connection.Close();
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+
+            }
+        }
+
+        // 여기 수정하자...
+        private void CategoryButtonOnClick(object sender, RoutedEventArgs e)
+        {
+            using (connection = new MySqlConnection(connStr))
+            {
+                try
+                {
+                    connection.Open();
+
+                    //| seat_no | seat_xpos | seat_ypos | usr_id | seat_totprc |
+                    string query = "select c.pro_name, b.sale_count, b.sale_totprc, b.sale_discount, DATE_FORMAT(b.sale_time, '%H:%i:%s') sale_datetime " +
+                        "from seat a join (sale b join product c on b.pro_code = c.pro_code) on a.seat_no = b.seat_no and a.seat_no=" + TableNum + ";";
 
                     //MySqlDataAdapter adapter = new MySqlDataAdapter(query, connection);
                     MySqlCommand command = new MySqlCommand(query, connection);
@@ -50,10 +143,7 @@ namespace WindowsPos.View
                     Console.WriteLine(ex.ToString());
                 }
             }
-        }
 
-        private void CategoryButtonOnClick(object sender, RoutedEventArgs e)
-        {
             var temp = sender as CustomButton;
             // temp.Content.ToString();
             MenuListGrid.Children.Clear();

@@ -17,7 +17,8 @@ namespace WindowsPos.Model
         private static MainSystem _instance;
 
         public Member _member;
-        public List<Table> _tablelist;  // 현재 생성되어있는 테이블 목록
+        //public List<Table> _tablelist;  // 현재 생성되어있는 테이블 목록
+        public DataTable _tablelist;
         public List<Food> _menulist;
         public List<Category> _categorylist;
         public MainSystem() {}
@@ -36,10 +37,15 @@ namespace WindowsPos.Model
         {
             _member = new Member(dtRow);
         }
-        public void SetTableList(List<Table> tablelist)
+        //public void SetTableList(List<Table> tablelist)
+        //{
+        //    _tablelist = tablelist;
+        //}
+        public void SetTableList(DataTable tablelist)
         {
             _tablelist = tablelist;
-        }   
+        }
+
         public void SetMenuList(List<Food> menulist)
         {
             _menulist = menulist;

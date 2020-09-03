@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:WindowsPos.View"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="800"
-      Title="ModifyTablePage">
+      Title="ModifyTablePage" Loaded="ModifyTablePageOnLoad">
     <Grid Margin="20">
         <Grid.Resources>
             <Style TargetType="Button" x:Key="ButtonOption">
@@ -14,6 +14,7 @@
                 <Setter Property="Margin" Value="2"/>
                 <Setter Property="FontWeight" Value="SemiBold"/>
             </Style>
+            
             <ControlTemplate x:Key="switch" TargetType="{x:Type CheckBox}">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -75,12 +76,10 @@
             <Button Style="{StaticResource ButtonOption}" Height="50" Content="테이블 추가" Name="btnInsert" Click="btnInsertClicked"/>
             <Button Style="{StaticResource ButtonOption}" Height="50" Content="테이블 삭제" Name="btnDelete" Click="btnDeleteClicked"/>
             <CheckBox Template="{StaticResource switch}" Height="50" Name="chkboxMove"
-                      HorizontalContentAlignment="Center"
-                      VerticalContentAlignment="Center"
-                      Margin="5,0">
-                
+                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5,0">
                 테이블 이동
             </CheckBox>
+            <Button Style="{StaticResource ButtonOption}" Height="50" Content="저장" Name="btnSave" Click="ButtonSaveOnClick"/>
             <Button Style="{StaticResource ButtonOption}" Height="50" Content="닫기" Name="btnClose" Click="ButtonCloseOnClick"/>
         </StackPanel>
         <Canvas Name="DesigningCanvas" Background="#FFEBEBEB" Grid.Column="1"/>

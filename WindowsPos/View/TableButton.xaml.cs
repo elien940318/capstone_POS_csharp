@@ -25,22 +25,24 @@ namespace WindowsPos.View
     {
         public int TableNum { get; set; }
 
-
         public TableButton()
         {
             InitializeComponent();
         }
 
-        public TableButton(int tableno, DataSet ds) : this()
+        public TableButton(int tableno) : this()
         {
             TableNum = tableno;
             txtTableName.Text = tableno + "번 테이블";
+        }
 
-            if (ds.Tables.Count > 0)
+        public TableButton(int tableno, DataTable dt) : this(tableno)
+        {
+            if (dt.Rows.Count > 0)
             {
                 int cnt = 0;
                 int table_prc = 0;
-                foreach (DataRow row in ds.Tables[0].Rows)
+                foreach (DataRow row in dt.Rows)
                 {
                     table_prc += Convert.ToInt32(row["sale_totprc"]);
                     if (cnt < 3)
