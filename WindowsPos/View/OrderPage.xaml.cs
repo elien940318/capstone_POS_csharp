@@ -11,14 +11,15 @@ namespace WindowsPos.View
 {
     public partial class OrderPage : Page
     {
-        public int TableNum { get; set; }
-
-        DataTable dtOrderlist;
+        
         MySqlConnection connection;
         MySqlCommand command;
+        DataTable dtOrderlist;  // 메뉴 주문 리스트
 
         string connStr = "Server=175.200.94.253;Port=3306;Database=capstone;Uid=capstone;Pwd=capstone";
-        
+        string updatequery = "START TRANSACTION;";
+
+        public int TableNum { get; set; }
         public OrderPage()
         {
             InitializeComponent();
@@ -26,9 +27,6 @@ namespace WindowsPos.View
 
         public OrderPage(TableButton btn) : this()
         {
-            cnt = 0;
-            price = 0;
-            discprice = 0;
             TableNum = btn.TableNum;
 
             using (connection = new MySqlConnection(connStr))
@@ -37,25 +35,19 @@ namespace WindowsPos.View
                 {
                     connection.Open();
 
-
                     command = new MySqlCommand("sp_s_tableorder", connection);
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(new MySqlParameter("TABLE_NUM", TableNum));
                     command.Parameters["TABLE_NUM"].Direction = ParameterDirection.Input;
 
                     dtOrderlist = new DataTable();
-
                     dtOrderlist.Load(command.ExecuteReader());
                     orderList.DataContext = dtOrderlist.DefaultView;
 
-
-
-
+                    //---------------------------------------------------------------
                     string query = "SELECT * FROM category";
-
                     command = new MySqlCommand(query, connection);
                     DataTable dtCat = new DataTable();
-
                     dtCat.Load(command.ExecuteReader());
 
                     foreach (DataRow drRow in dtCat.Rows)
@@ -76,10 +68,7 @@ namespace WindowsPos.View
                         MenuCategoryGrid.Children.Add(border);
                     }
 
-
-
-
-
+                    //---------------------------------------------------------------
                     query = "SELECT * FROM product WHERE cat_code = " + dtCat.Rows[0][0] + ";";
                     command = new MySqlCommand(query, connection);
                     DataTable dtMenu = new DataTable();
@@ -91,6 +80,7 @@ namespace WindowsPos.View
                         tempBtn.Content = drRow[1].ToString();
                         tempBtn.Tag = drRow[0].ToString();
                         tempBtn.Style = Resources["ButtonOption"] as Style;
+                        tempBtn.Click += MenuButtonOnClick;
                         MenuListGrid.Children.Add(tempBtn);
                     }
                     for (int i = 0; i < 25 - dtMenu.Rows.Count; i++)
@@ -105,11 +95,10 @@ namespace WindowsPos.View
 
                     connection.Close();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
                 }
-
             }
         }
 
@@ -120,7 +109,7 @@ namespace WindowsPos.View
             using (connection = new MySqlConnection(connStr))
             {
                 try
-                {
+                { 
                     connection.Open();
 
                     string query = "SELECT pro_code, pro_name FROM product WHERE cat_code=" + senderBtn.Tag + ";";
@@ -137,6 +126,7 @@ namespace WindowsPos.View
                         tempBtn.Content = drRow[1].ToString();
                         tempBtn.Tag = drRow[0].ToString();
                         tempBtn.Style = Resources["ButtonOption"] as Style;
+                        tempBtn.Click += MenuButtonOnClick;
                         MenuListGrid.Children.Add(tempBtn);
                     }
                     for (int i = 0; i < 25 - dtMenu.Rows.Count; i++)
@@ -159,32 +149,42 @@ namespace WindowsPos.View
 
         private void MenuButtonOnClick(object sender, RoutedEventArgs e)
         {
-            var btn = sender as CustomButton;
+            var btn = sender as Button;
+            var size = dtOrderlist.Rows.Count;
 
+            // 데이터테이블 마지막 열의 값과 동일한 경우 (특정 음식을 한번 더 누른 경우)
+            if (dtOrderlist.Rows[size - 1][0].ToString() == btn.Content.ToString())
+            {
+                dtOrderlist.Rows[size - 1][1] = Int32.Parse(dtOrderlist.Rows[size - 1][2].ToString()) + 1;
+                return;
+            }
+
+
+            using (connection = new MySqlConnection(connStr))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "SELECT pro_price FROM product WHERE pro_code=" + btn.Tag + ";";
+
+                    command = new MySqlCommand(query, connection);
+                    MySqlDataReader reader = command.ExecuteReader();
+                    reader.Read();
+                    dtOrderlist.Rows.Add(btn.Content.ToString(), 1, reader.GetString(0), 0, DateTime.Now.ToString("hh:mm:ss"));
+
+                    connection.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+            }
 
         }
 
         private void ButtonCloseOnClick(object sender, RoutedEventArgs e)
         {
             this.NavigationService.GoBack();
-        }
-    }
-
-    class GridViewData
-    {
-        public int Num { get; set; }
-        public string ProductName { get; set; }
-        public int Count { get; set; }
-        public int Price { get; set; }
-        public int Discount { get; set; }
-
-        public GridViewData(int n, string pn, int c, int p, int d)
-        {
-            Num = n;
-            ProductName = pn;
-            Count = c;
-            Price = p;
-            Discount = d;
         }
     }
 }
