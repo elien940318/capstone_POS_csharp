@@ -12,15 +12,12 @@ namespace WindowsPos.View
     public partial class OrderPage : Page
     {
         public int TableNum { get; set; }
-        int cnt;
-        int price;
-        int discprice;
 
         DataTable dtOrderlist;
         MySqlConnection connection;
+        MySqlCommand command;
 
         string connStr = "Server=175.200.94.253;Port=3306;Database=capstone;Uid=capstone;Pwd=capstone";
-        
         
         public OrderPage()
         {
@@ -40,23 +37,21 @@ namespace WindowsPos.View
                 {
                     connection.Open();
 
-                    //| seat_no | seat_xpos | seat_ypos | usr_id | seat_totprc |
-                    string query = "select c.pro_name, b.sale_count, b.sale_totprc, b.sale_discount, DATE_FORMAT(b.sale_time, '%H:%i:%s') sale_datetime " +
-                        "from seat a join (sale b join product c on b.pro_code = c.pro_code) on a.seat_no = b.seat_no and a.seat_no=" + TableNum + ";";
 
-                    //MySqlDataAdapter adapter = new MySqlDataAdapter(query, connection);
-                    MySqlCommand command = new MySqlCommand(query, connection);
+                    command = new MySqlCommand("sp_s_tableorder", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new MySqlParameter("TABLE_NUM", TableNum));
+                    command.Parameters["TABLE_NUM"].Direction = ParameterDirection.Input;
+
                     dtOrderlist = new DataTable();
 
                     dtOrderlist.Load(command.ExecuteReader());
                     orderList.DataContext = dtOrderlist.DefaultView;
 
-                    
 
 
 
-
-                    query = "SELECT * FROM category";
+                    string query = "SELECT * FROM category";
 
                     command = new MySqlCommand(query, connection);
                     DataTable dtCat = new DataTable();
@@ -67,6 +62,7 @@ namespace WindowsPos.View
                     {
                         Button tempBtn = new Button();
                         tempBtn.Content = drRow[1].ToString();
+                        tempBtn.Tag = drRow[0].ToString();
                         tempBtn.Style = Resources["ButtonOption"] as Style;
                         tempBtn.Click += CategoryButtonOnClick;
                         MenuCategoryGrid.Children.Add(tempBtn);
@@ -93,6 +89,7 @@ namespace WindowsPos.View
                     {
                         Button tempBtn = new Button();
                         tempBtn.Content = drRow[1].ToString();
+                        tempBtn.Tag = drRow[0].ToString();
                         tempBtn.Style = Resources["ButtonOption"] as Style;
                         MenuListGrid.Children.Add(tempBtn);
                     }
@@ -119,22 +116,37 @@ namespace WindowsPos.View
         // 여기 수정하자...
         private void CategoryButtonOnClick(object sender, RoutedEventArgs e)
         {
+            Button senderBtn = sender as Button;
             using (connection = new MySqlConnection(connStr))
             {
                 try
                 {
                     connection.Open();
 
-                    //| seat_no | seat_xpos | seat_ypos | usr_id | seat_totprc |
-                    string query = "select c.pro_name, b.sale_count, b.sale_totprc, b.sale_discount, DATE_FORMAT(b.sale_time, '%H:%i:%s') sale_datetime " +
-                        "from seat a join (sale b join product c on b.pro_code = c.pro_code) on a.seat_no = b.seat_no and a.seat_no=" + TableNum + ";";
+                    string query = "SELECT pro_code, pro_name FROM product WHERE cat_code=" + senderBtn.Tag + ";";
 
-                    //MySqlDataAdapter adapter = new MySqlDataAdapter(query, connection);
-                    MySqlCommand command = new MySqlCommand(query, connection);
-                    DataTable dt = new DataTable();
+                    command = new MySqlCommand(query, connection);
+                    DataTable dtMenu = new DataTable();
+                    dtMenu.Load(command.ExecuteReader());
 
-                    dt.Load(command.ExecuteReader());
-                    orderList.DataContext = dt.DefaultView;
+                    MenuListGrid.Children.Clear();
+
+                    foreach (DataRow drRow in dtMenu.Rows)
+                    {
+                        Button tempBtn = new Button();
+                        tempBtn.Content = drRow[1].ToString();
+                        tempBtn.Tag = drRow[0].ToString();
+                        tempBtn.Style = Resources["ButtonOption"] as Style;
+                        MenuListGrid.Children.Add(tempBtn);
+                    }
+                    for (int i = 0; i < 25 - dtMenu.Rows.Count; i++)
+                    {
+                        Border border = new Border();
+                        border.Background = Brushes.AliceBlue;
+                        border.CornerRadius = new CornerRadius(5);
+                        border.Margin = new Thickness(2);
+                        MenuListGrid.Children.Add(border);
+                    }
 
                     connection.Close();
                 }
@@ -143,52 +155,13 @@ namespace WindowsPos.View
                     Console.WriteLine(ex.ToString());
                 }
             }
-
-            var temp = sender as CustomButton;
-            // temp.Content.ToString();
-            MenuListGrid.Children.Clear();
-
-            List<Food> fdlst = new List<Food>();
-            foreach (var item in MainSystem.GetInstance._menulist)
-            {
-                if (item.Category == (int)temp.Tag)
-                    fdlst.Add(item);
-            }
-            foreach (var item in fdlst)
-            {
-                CustomButton btntemp = new CustomButton();
-                btntemp.Content = item.ProductName;
-                btntemp.Tag = item.ProductCode;
-                btntemp.Click += MenuButtonOnClick;
-                MenuListGrid.Children.Add(btntemp);
-            }
-            for (int i = 0; i < 25 - fdlst.Count; i++)
-            {
-                Border bdr = new Border();
-                bdr.Background = Brushes.AliceBlue;
-                bdr.CornerRadius = new CornerRadius(5);
-                bdr.Margin = new Thickness(2);
-                MenuListGrid.Children.Add(bdr);
-            }
         }
 
         private void MenuButtonOnClick(object sender, RoutedEventArgs e)
         {
             var btn = sender as CustomButton;
 
-            foreach (var item in MainSystem.GetInstance._menulist)
-            {
-                if ((int)btn.Tag == item.ProductCode)
-                {
-                    GridViewData temp = new GridViewData(++cnt, item.ProductName.ToString(),
-                        1, item.ProductPrice, 0);
-                    orderList.Items.Add(temp);
-                    price += item.ProductPrice;
-                    txtPrice.Content = price;
-                    txtTotalPrice.Content = price - discprice;
-                    return;
-                }
-            }
+
         }
 
         private void ButtonCloseOnClick(object sender, RoutedEventArgs e)
