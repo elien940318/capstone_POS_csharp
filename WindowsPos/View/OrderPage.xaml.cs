@@ -32,7 +32,7 @@ namespace WindowsPos.View
                 {
                     connection.Open();
 
-                    command = new MySqlCommand("sp_s_tableorder", connection);
+                    command = new MySqlCommand("sp_s_tableorderlist", connection);
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(new MySqlParameter("TABLE_NUM", TableNum));
                     command.Parameters["TABLE_NUM"].Direction = ParameterDirection.Input;

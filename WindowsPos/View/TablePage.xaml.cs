@@ -54,10 +54,16 @@ namespace WindowsPos.View
                     foreach (DataRow tbl in MainSystem.GetInstance._tablelist.Rows)
                     {
                         //| seat_no | seat_xpos | seat_ypos | usr_id | seat_totprc |
-                        string query = "select c.pro_name, b.sale_count, b.sale_totprc, b.sale_discount from seat a join (sale b join product c on b.pro_code = c.pro_code) on a.seat_no = b.seat_no and a.seat_no=@seat_no;";
-                        MySqlCommand command = new MySqlCommand(query, connection);
-                        var tableNum = new MySqlParameter("@seat_no", tbl[0]);
-                        command.Parameters.Add(tableNum);
+                        // string query = "select c.pro_name, b.sale_count, b.sale_totprc, b.sale_discount from seat a join (sale b join product c on b.pro_code = c.pro_code) on a.seat_no = b.seat_no and a.seat_no=@seat_no;";
+
+                        MySqlCommand command = new MySqlCommand("sp_s_tableorderlist", connection);
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.Add(new MySqlParameter("TABLE_NUM", tbl[0]));
+                        command.Parameters["TABLE_NUM"].Direction = ParameterDirection.Input;
+
+                        //MySqlCommand command = new MySqlCommand(query, connection);
+                        //var tableNum = new MySqlParameter("@seat_no", tbl[0]);
+                        //command.Parameters.Add(tableNum);
 
                         DataTable dt = new DataTable();
                         dt.Load(command.ExecuteReader());
