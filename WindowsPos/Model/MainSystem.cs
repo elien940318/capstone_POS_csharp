@@ -20,7 +20,6 @@ namespace WindowsPos.Model
         //public List<Table> _tablelist;  // 현재 생성되어있는 테이블 목록
         public DataTable _tablelist;
         public List<Food> _menulist;
-        public List<Category> _categorylist;
         public MainSystem() {}
 
         public static MainSystem GetInstance
@@ -49,10 +48,6 @@ namespace WindowsPos.Model
         public void SetMenuList(List<Food> menulist)
         {
             _menulist = menulist;
-        }
-        public void SetCategoryList(List<Category> categorylist)
-        {
-            _categorylist = categorylist;
         }
     }
 }

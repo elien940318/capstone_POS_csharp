@@ -20,10 +20,7 @@ namespace WindowsPos.View
         string updatequery = "START TRANSACTION;";
 
         public int TableNum { get; set; }
-        public OrderPage()
-        {
-            InitializeComponent();
-        }
+        public OrderPage() { InitializeComponent(); }
 
         public OrderPage(TableButton btn) : this()
         {
@@ -76,9 +73,10 @@ namespace WindowsPos.View
 
                     foreach (DataRow drRow in dtMenu.Rows)
                     {
-                        Button tempBtn = new Button();
-                        tempBtn.Content = drRow[1].ToString();
-                        tempBtn.Tag = drRow[0].ToString();
+                        CustomButton tempBtn = new CustomButton(drRow);
+                        tempBtn.Content = drRow[1].ToString();  // 제품명을 content로...
+                        tempBtn.Tag = drRow[0].ToString();      // 제품코드를 tag로...
+                        
                         tempBtn.Style = Resources["ButtonOption"] as Style;
                         tempBtn.Click += MenuButtonOnClick;
                         MenuListGrid.Children.Add(tempBtn);
@@ -91,7 +89,6 @@ namespace WindowsPos.View
                         border.Margin = new Thickness(2);
                         MenuListGrid.Children.Add(border);
                     }
-
 
                     connection.Close();
                 }
@@ -122,7 +119,7 @@ namespace WindowsPos.View
 
                     foreach (DataRow drRow in dtMenu.Rows)
                     {
-                        Button tempBtn = new Button();
+                        CustomButton tempBtn = new CustomButton(drRow);
                         tempBtn.Content = drRow[1].ToString();
                         tempBtn.Tag = drRow[0].ToString();
                         tempBtn.Style = Resources["ButtonOption"] as Style;
@@ -149,28 +146,37 @@ namespace WindowsPos.View
 
         private void MenuButtonOnClick(object sender, RoutedEventArgs e)
         {
-            var btn = sender as Button;
+            var btn = sender as CustomButton;
             var size = dtOrderlist.Rows.Count;
 
             // 데이터테이블 마지막 열의 값과 동일한 경우 (특정 음식을 한번 더 누른 경우)
             if (dtOrderlist.Rows[size - 1][0].ToString() == btn.Content.ToString())
             {
-                dtOrderlist.Rows[size - 1][1] = Int32.Parse(dtOrderlist.Rows[size - 1][2].ToString()) + 1;
+                dtOrderlist.Rows[size - 1][1] = Int32.Parse(dtOrderlist.Rows[size - 1][1].ToString()) + 1;
+                //updatequery += "UPDATE sale SET sale_count = sale_count + 1, sale_totprc = sale_totprc + " + btn.foodOption.ProductPrice 
+                //    + " WHERE ;";
                 return;
             }
-
 
             using (connection = new MySqlConnection(connStr))
             {
                 try
                 {
                     connection.Open();
+                    
+                    //sale_no | sale_time | sale_count | sale_discount | sale_totprc | seat_no | pro_code | usr_id
                     string query = "SELECT pro_price FROM product WHERE pro_code=" + btn.Tag + ";";
 
                     command = new MySqlCommand(query, connection);
                     MySqlDataReader reader = command.ExecuteReader();
                     reader.Read();
+
+                    // DataTable에 추가
                     dtOrderlist.Rows.Add(btn.Content.ToString(), 1, reader.GetString(0), 0, DateTime.Now.ToString("hh:mm:ss"));
+
+                    updatequery += "INSERT INTO sale(sale_count, seat_no, pro_code, usr_id) VALUES (1, " + TableNum + ", " + btn.Tag + ", '" +
+                        MainSystem.GetInstance._member.Id.ToString() + "'); ";
+
 
                     connection.Close();
                 }

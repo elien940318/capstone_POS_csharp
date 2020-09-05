@@ -51,15 +51,15 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
-        <Style TargetType="Button" x:Key="ButtonOption">
+    
+        <Style x:Key="ButtonOption" TargetType="{x:Type Button}">
             <Setter Property="TextBlock.TextAlignment" Value="Center"/>
             <Setter Property="Margin" Value="1"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Foreground" Value="Orange"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="Button">
+                    <ControlTemplate TargetType="{x:Type Button}">
                         <Border CornerRadius="5" Background="#0A1B2A" BorderBrush="#ccc" BorderThickness="0,0,2,2" >
                             <ContentPresenter x:Name="contentPresenter" 
                                             ContentTemplate="{TemplateBinding ContentTemplate}" 
@@ -109,59 +109,7 @@
                     <DataGridTextColumn Header="주문시간"  Width="3*" IsReadOnly="True" Binding="{Binding sale_datetime}"/>
                 </DataGrid.Columns>
             </DataGrid>
-            
-            <!--
-            <src:CustomLineGrid DockPanel.Dock="Top" Margin="0,20,0,0" Background="AliceBlue" ShowGridLines="True"
-                                x:Name="orderList" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <src:CustomLineGrid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </src:CustomLineGrid.RowDefinitions>
-                <src:CustomLineGrid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="10*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="3*"/>
-                    <ColumnDefinition Width="3*"/>
-                </src:CustomLineGrid.ColumnDefinitions>
-                <src:CustomLineGrid.Resources>
-                    <Style TargetType="Label" x:Key="LabelOption">
-                        <Setter Property="Foreground" Value="Orange"/>
-                        <Setter Property="HorizontalAlignment" Value="Center"/>
-                        <Setter Property="VerticalAlignment" Value="Center"/>
-                    </Style>
-                </src:CustomLineGrid.Resources>
-                <Border Grid.Row="0" Grid.ColumnSpan="5" Background="#0A1B2A"/>
-                <Border Grid.Row="1" Background="#0A1B2A"/>
-                <Border Grid.Row="2" Background="#0A1B2A"/>
-                <Border Grid.Row="3" Background="#0A1B2A"/>
-                <Border Grid.Row="4" Background="#0A1B2A"/>
-                <Border Grid.Row="5" Background="#0A1B2A"/>
-                <Border Grid.Row="6" Background="#0A1B2A"/>
-                <Border Grid.Row="7" Background="#0A1B2A"/>
 
-                <Label Style="{StaticResource LabelOption}" Grid.Row="0" Grid.Column="0" Content="*"/>
-                <Label Style="{StaticResource LabelOption}" Grid.Row="0" Grid.Column="1" Content="상품명"/>
-                <Label Style="{StaticResource LabelOption}" Grid.Row="0" Grid.Column="2" Content="수량"/>
-                <Label Style="{StaticResource LabelOption}" Grid.Row="0" Grid.Column="3" Content="금액"/>
-                <Label Style="{StaticResource LabelOption}" Grid.Row="0" Grid.Column="4" Content="할인금액"/>
-                
-                <Label Style="{StaticResource LabelOption}" Grid.Row="1" Grid.Column="0" Content="1"/>
-                <Label Style="{StaticResource LabelOption}" Grid.Row="2" Grid.Column="0" Content="2"/>
-                <Label Style="{StaticResource LabelOption}" Grid.Row="3" Grid.Column="0" Content="3"/>
-                <Label Style="{StaticResource LabelOption}" Grid.Row="4" Grid.Column="0" Content="4"/>
-                <Label Style="{StaticResource LabelOption}" Grid.Row="5" Grid.Column="0" Content="5"/>
-                <Label Style="{StaticResource LabelOption}" Grid.Row="6" Grid.Column="0" Content="6"/>
-                <Label Style="{StaticResource LabelOption}" Grid.Row="7" Grid.Column="0" Content="7"/>
-            </src:CustomLineGrid>
-            -->
-            
             <Grid DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>

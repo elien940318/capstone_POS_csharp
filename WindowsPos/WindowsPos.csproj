@@ -118,7 +118,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Model\Category.cs" />
     <Compile Include="Model\Order.cs" />
     <Compile Include="Model\Table.cs" />
     <Compile Include="ViewModel\DelegateCommand.cs" />
