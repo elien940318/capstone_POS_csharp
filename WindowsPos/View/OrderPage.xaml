@@ -148,31 +148,38 @@
                     </Style>
                 </Grid.Resources>
 
-                <Button Grid.Row="1" Grid.Column="0" Style="{StaticResource ButtonOption}">
+                <Button Grid.Row="1" Grid.Column="0" Style="{StaticResource ButtonOption}"
+                        Name="btnDeleteAll">
                     <Label>
                         <TextBlock Foreground="Orange">
                     전체<LineBreak/>취소
                         </TextBlock>
                     </Label>
                 </Button>
-                <Button Grid.Row="1" Grid.Column="1" Style="{StaticResource ButtonOption}">
+                <Button Grid.Row="1" Grid.Column="1" Style="{StaticResource ButtonOption}"
+                        Name="btnDeleteSelection" Click="btnDeleteSelection_Click">
                     <Label>
                         <TextBlock Foreground="Orange">
                     선택<LineBreak/>취소
                         </TextBlock>
                     </Label>
                 </Button>
-                <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource ButtonOption}">
+                <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource ButtonOption}"
+                        Name="btnApplyDiscount">
                     <Label>
                         <TextBlock Foreground="Orange">
                     할인<LineBreak/>적용
                         </TextBlock>
                     </Label>
                 </Button>
-                <Button Grid.Row="1" Grid.Column="3" Style="{StaticResource ButtonOption}" Content="수량 +"/>
-                <Button Grid.Row="1" Grid.Column="4" Style="{StaticResource ButtonOption}" Content="수량 -"/>
-                <Button Grid.Row="1" Grid.Column="5" Style="{StaticResource ButtonOption}" Content="↑"/>
-                <Button Grid.Row="1" Grid.Column="6" Style="{StaticResource ButtonOption}" Content="↓"/>
+                <Button Grid.Row="1" Grid.Column="3" Style="{StaticResource ButtonOption}" 
+                        Content="수량 +" Name="btnCountPlus"/>
+                <Button Grid.Row="1" Grid.Column="4" Style="{StaticResource ButtonOption}" 
+                        Content="수량 -" Name="btnCountMinus"/>
+                <Button Grid.Row="1" Grid.Column="5" Style="{StaticResource ButtonOption}" 
+                        Content="↑"/>
+                <Button Grid.Row="1" Grid.Column="6" Style="{StaticResource ButtonOption}" 
+                        Content="↓"/>
             </Grid>
 
         </DockPanel>

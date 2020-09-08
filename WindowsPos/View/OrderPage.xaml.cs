@@ -16,11 +16,19 @@ namespace WindowsPos.View
         MySqlCommand command;
         DataTable dtOrderlist;  // 메뉴 주문 리스트
 
-        string connStr = "Server=175.200.94.253;Port=3306;Database=capstone;Uid=capstone;Pwd=capstone";
-        string updatequery = "START TRANSACTION;";
+        string connStr;
 
         public int TableNum { get; set; }
-        public OrderPage() { InitializeComponent(); }
+        public int tempProductCode { get; set; }
+
+        public bool firstOrder { get; set; }
+
+        public OrderPage() 
+        { 
+            InitializeComponent();
+            connStr = "Server=175.200.94.253;Port=3306;Database=capstone;Uid=capstone;Pwd=capstone";
+            tempProductCode = 0;
+        }
 
         public OrderPage(TableButton btn) : this()
         {
@@ -148,46 +156,31 @@ namespace WindowsPos.View
         {
             var btn = sender as CustomButton;
             var size = dtOrderlist.Rows.Count;
-
-            // 데이터테이블 마지막 열의 값과 동일한 경우 (특정 음식을 한번 더 누른 경우)
-            if (dtOrderlist.Rows[size - 1][0].ToString() == btn.Content.ToString())
+            
+            // 1. temp의 제품코드와 Button의 제품코드가 동일한가?
+            if (Int32.Parse(btn.Tag.ToString()) == tempProductCode)
             {
-                dtOrderlist.Rows[size - 1][1] = Int32.Parse(dtOrderlist.Rows[size - 1][1].ToString()) + 1;
+                // 수량과 총가격을 계산하자.
+                dtOrderlist.Rows[size - 1]["sale_count"] = (int)dtOrderlist.Rows[size - 1]["sale_count"] + 1;
+                dtOrderlist.Rows[size - 1]["sale_totprc"] = (int)dtOrderlist.Rows[size - 1]["sale_totprc"] + btn.foodOption.ProductPrice;
 
                 return;
             }
 
-            using (connection = new MySqlConnection(connStr))
-            {
-                try
-                {
-                    connection.Open();
-                    
-                    string query = "SELECT pro_price FROM product WHERE pro_code=" + btn.Tag + ";";
-
-                    command = new MySqlCommand(query, connection);
-                    MySqlDataReader reader = command.ExecuteReader();
-                    reader.Read();
-
-                    DateTime dt = DateTime.Now;
-                    // 상품명 수량 총금액 할인금액 주문시간
-                    dtOrderlist.Rows.Add(btn.Content.ToString(), 1, reader.GetString(0), 0, dt.ToString("HH:mm:ss"), btn.Tag, null);
-
-
-                    connection.Close();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                }
-            }
+            if (dtOrderlist.Rows.Count == 0 || firstOrder == false)
+                firstOrder = true;
+            
+            // 상품명 수량 총금액 할인금액 주문시간
+            dtOrderlist.Rows.Add(btn.Content.ToString(), 1, btn.foodOption.ProductPrice, 0, DateTime.Now.ToString("HH:mm:ss"), btn.Tag, null);
+            tempProductCode = Int32.Parse(btn.Tag.ToString());
         }
+
         private void ButtonSaveOnClick(object sender, RoutedEventArgs e)
         {
             MySqlTransaction transaction = null;
             MySqlCommand command = new MySqlCommand();
 
-            bool addOrder = false;
+            
 
             using (connection = new MySqlConnection(connStr))
             {
@@ -199,44 +192,105 @@ namespace WindowsPos.View
                     
                     command.Connection = connection;
                     command.Transaction = transaction;
+                    
                 }
                 catch(Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
                     connection.Close();
-                }
+                }   
 
-                string query = string.Empty;
+                // 쿼리문 필요없음 -> 스토어드 프로시저 사용함...
+                // string query = string.Empty;
 
                 try
                 {
+                    int tempOrderNo = -1;
+
                     foreach (DataRow drRow in dtOrderlist.Rows)
                     {
+                        // DataTable UI 구성상 갖고있는 컬럼정보
+                        // pro_name | sale_count | sale_totprc | sale_discount | order_date | pro_code | order_no 
+
+
+                        // tableorder: usr_id, seat_no
+                        // sale: order_no, pro_code
+
+                        
                         switch (drRow.RowState)
                         {
                             case DataRowState.Added:
-                                if (!addOrder)
+                                if (firstOrder)
                                 {
-                                    query += "INSERT INTO tableorder(seat_no, usr_id) VALUES(" + TableNum + ", '" + MainSystem.GetInstance._member.Id + "');";
-                                    addOrder = !addOrder;
-                                }
-                                query += "INSERT INTO sale(order_no, pro_code, sale_count) values ((SELECT MAX(order_no) FROM tableorder WHERE seat_no = " + TableNum + "), " + drRow["pro_code"] + ", 1)";
+                                    // 주문번호를 가져와야 INSERT가 가능해진다...
+                                    command = new MySqlCommand("SP_INSERT_TABLEORDER", connection);
+                                    command.Parameters.Add(new MySqlParameter("USR_ID", MainSystem.GetInstance._member.Id.ToString()));
+                                    command.Parameters.Add(new MySqlParameter("SEAT_NO", TableNum.ToString()));
+                                    command.Parameters.Add("@ORDER_NO", MySqlDbType.Int32, 11);
+                                    command.Parameters["USR_ID"].Direction = ParameterDirection.Input;
+                                    command.Parameters["SEAT_NO"].Direction = ParameterDirection.Input;
+                                    command.Parameters["@ORDER_NO"].Direction = ParameterDirection.Output;
 
+                                    command.CommandType = CommandType.StoredProcedure;
+
+                                    // ------- tempOrderNo로 주문번호가 넘어오질 않음...
+                                    using (var reader = command.ExecuteReader())
+                                    {
+                                        while (reader.Read())
+                                        {
+                                            tempOrderNo = (int)reader["order_no"];
+                                        }
+                                    }
+                                    
+                                    firstOrder = !firstOrder;
+                                }
+                                command = new MySqlCommand("SP_INSERT_SALE", connection);
+                                command.Parameters.Add(new MySqlParameter("SEAT_NO", TableNum.ToString()));
+                                command.Parameters.Add(new MySqlParameter("ORDER_NO", tempOrderNo));
+                                command.Parameters.Add(new MySqlParameter("PRO_CODE", drRow["pro_code"]));
+                                command.Parameters.Add(new MySqlParameter("SALE_COUNT", drRow["sale_count"]));
+                                command.Parameters.Add(new MySqlParameter("SALE_DISCOUNT", drRow["sale_discount"]));
+                                command.Parameters["SEAT_NO"].Direction = ParameterDirection.Input;
+                                command.Parameters["ORDER_NO"].Direction = ParameterDirection.Input;
+                                command.Parameters["PRO_CODE"].Direction = ParameterDirection.Input;
+                                command.Parameters["SALE_COUNT"].Direction = ParameterDirection.Input;
+                                command.Parameters["SALE_DISCOUNT"].Direction = ParameterDirection.Input;
+                                command.CommandType = CommandType.StoredProcedure;
+                                command.ExecuteNonQuery();
                                 break;
+
+                                
                             case DataRowState.Deleted:
-                                query += "DELETE FROM sale WHERE order_no=" + drRow["order_no"] + " AND pro_code=" + drRow["pro_code"] + ";";
+                                command = new MySqlCommand("SP_DELETE_SALE", connection);
+                                command.Parameters.Add(new MySqlParameter("ORDER_NO", drRow["order_no"]));
+                                command.Parameters.Add(new MySqlParameter("PRO_CODE", drRow["pro_code"]));
+                                command.Parameters["ORDER_NO"].Direction = ParameterDirection.Input;
+                                command.Parameters["PRO_CODE"].Direction = ParameterDirection.Input;
+                                command.CommandType = CommandType.StoredProcedure;
+                                command.ExecuteNonQuery();
                                 break;
+
+
                             case DataRowState.Modified:
+                                command = new MySqlCommand("SP_UPDATE_SALE", connection);
+                                command.Parameters.Add(new MySqlParameter("ORDER_NO", drRow["order_no"]));
+                                command.Parameters.Add(new MySqlParameter("PRO_CODE", drRow["pro_code"]));
+                                command.Parameters.Add(new MySqlParameter("SALE_COUNT", drRow["sale_count"]));
+                                command.Parameters.Add(new MySqlParameter("SALE_DISCOUNT", drRow["sale_discount"]));
+                                command.Parameters["ORDER_NO"].Direction = ParameterDirection.Input;
+                                command.Parameters["PRO_CODE"].Direction = ParameterDirection.Input;
+                                command.Parameters["SALE_COUNT"].Direction = ParameterDirection.Input;
+                                command.Parameters["SALE_DISCOUNT"].Direction = ParameterDirection.Input;
+                                command.CommandType = CommandType.StoredProcedure;
+                                command.ExecuteNonQuery();
                                 break;
+
                             default:
                                 break;
                         }
-
-                        command.CommandText = query;
-                        command.CommandType = CommandType.Text;
-                        command.ExecuteNonQuery();
-                        transaction.Commit();
                     }
+
+                    transaction.Commit();
                 }
                 catch(Exception ex)
                 {
@@ -248,6 +302,7 @@ namespace WindowsPos.View
                     connection.Close();
                 }
             }
+            this.NavigationService.GoBack();
         }
 
 
@@ -256,6 +311,9 @@ namespace WindowsPos.View
             this.NavigationService.GoBack();
         }
 
-        
+        private void btnDeleteSelection_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

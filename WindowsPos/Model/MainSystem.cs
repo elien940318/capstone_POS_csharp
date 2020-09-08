@@ -7,11 +7,6 @@ using System.Threading.Tasks;
 
 namespace WindowsPos.Model
 {
-    public struct Position {
-        double xpos;
-        double ypos;
-    }
-
     class MainSystem
     {
         private static MainSystem _instance;
