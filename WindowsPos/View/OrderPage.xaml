@@ -106,7 +106,7 @@
                     <DataGridTextColumn Header="수량"      Width="*"  IsReadOnly="True" Binding="{Binding sale_count}"/>
                     <DataGridTextColumn Header="총금액"    Width="2*" IsReadOnly="True" Binding="{Binding sale_totprc}"/>
                     <DataGridTextColumn Header="할인금액"  Width="2*" IsReadOnly="True" Binding="{Binding sale_discount}"/>
-                    <DataGridTextColumn Header="주문시간"  Width="3*" IsReadOnly="True" Binding="{Binding sale_datetime}"/>
+                    <DataGridTextColumn Header="주문시간"  Width="3*" IsReadOnly="True" Binding="{Binding order_date}"/>
                 </DataGrid.Columns>
             </DataGrid>
 
@@ -299,7 +299,7 @@
 
 
             <UniformGrid Grid.Row="2" Rows="2" Margin="0,20" Columns="5" x:Name="ButtonListGrid">
-                <Button Style="{StaticResource ButtonOption}" Content="주문"/>
+                <Button Style="{StaticResource ButtonOption}" Content="주문" Click="ButtonSaveOnClick"/>
                 <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
                 <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>
                 <Border Background="AliceBlue" CornerRadius="5" Margin="2"/>

@@ -32,7 +32,7 @@ namespace WindowsPos.View
                 {
                     connection.Open();
 
-                    command = new MySqlCommand("sp_s_tableorderlist", connection);
+                    command = new MySqlCommand("sp_select_tableorderlist_seatno", connection);
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(new MySqlParameter("TABLE_NUM", TableNum));
                     command.Parameters["TABLE_NUM"].Direction = ParameterDirection.Input;
@@ -109,7 +109,7 @@ namespace WindowsPos.View
                 { 
                     connection.Open();
 
-                    string query = "SELECT pro_code, pro_name FROM product WHERE cat_code=" + senderBtn.Tag + ";";
+                    string query = "SELECT * FROM product WHERE cat_code=" + senderBtn.Tag + ";";
 
                     command = new MySqlCommand(query, connection);
                     DataTable dtMenu = new DataTable();
@@ -153,8 +153,7 @@ namespace WindowsPos.View
             if (dtOrderlist.Rows[size - 1][0].ToString() == btn.Content.ToString())
             {
                 dtOrderlist.Rows[size - 1][1] = Int32.Parse(dtOrderlist.Rows[size - 1][1].ToString()) + 1;
-                //updatequery += "UPDATE sale SET sale_count = sale_count + 1, sale_totprc = sale_totprc + " + btn.foodOption.ProductPrice 
-                //    + " WHERE ;";
+
                 return;
             }
 
@@ -164,18 +163,15 @@ namespace WindowsPos.View
                 {
                     connection.Open();
                     
-                    //sale_no | sale_time | sale_count | sale_discount | sale_totprc | seat_no | pro_code | usr_id
                     string query = "SELECT pro_price FROM product WHERE pro_code=" + btn.Tag + ";";
 
                     command = new MySqlCommand(query, connection);
                     MySqlDataReader reader = command.ExecuteReader();
                     reader.Read();
 
-                    // DataTable에 추가
-                    dtOrderlist.Rows.Add(btn.Content.ToString(), 1, reader.GetString(0), 0, DateTime.Now.ToString("hh:mm:ss"));
-
-                    updatequery += "INSERT INTO sale(sale_count, seat_no, pro_code, usr_id) VALUES (1, " + TableNum + ", " + btn.Tag + ", '" +
-                        MainSystem.GetInstance._member.Id.ToString() + "'); ";
+                    DateTime dt = DateTime.Now;
+                    // 상품명 수량 총금액 할인금액 주문시간
+                    dtOrderlist.Rows.Add(btn.Content.ToString(), 1, reader.GetString(0), 0, dt.ToString("HH:mm:ss"), btn.Tag, null);
 
 
                     connection.Close();
@@ -185,12 +181,81 @@ namespace WindowsPos.View
                     Console.WriteLine(ex.ToString());
                 }
             }
-
         }
+        private void ButtonSaveOnClick(object sender, RoutedEventArgs e)
+        {
+            MySqlTransaction transaction = null;
+            MySqlCommand command = new MySqlCommand();
+
+            bool addOrder = false;
+
+            using (connection = new MySqlConnection(connStr))
+            {
+                try
+                {
+                    connection.Open();
+                    transaction = connection.BeginTransaction();
+                    command = connection.CreateCommand();
+                    
+                    command.Connection = connection;
+                    command.Transaction = transaction;
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                    connection.Close();
+                }
+
+                string query = string.Empty;
+
+                try
+                {
+                    foreach (DataRow drRow in dtOrderlist.Rows)
+                    {
+                        switch (drRow.RowState)
+                        {
+                            case DataRowState.Added:
+                                if (!addOrder)
+                                {
+                                    query += "INSERT INTO tableorder(seat_no, usr_id) VALUES(" + TableNum + ", '" + MainSystem.GetInstance._member.Id + "');";
+                                    addOrder = !addOrder;
+                                }
+                                query += "INSERT INTO sale(order_no, pro_code, sale_count) values ((SELECT MAX(order_no) FROM tableorder WHERE seat_no = " + TableNum + "), " + drRow["pro_code"] + ", 1)";
+
+                                break;
+                            case DataRowState.Deleted:
+                                query += "DELETE FROM sale WHERE order_no=" + drRow["order_no"] + " AND pro_code=" + drRow["pro_code"] + ";";
+                                break;
+                            case DataRowState.Modified:
+                                break;
+                            default:
+                                break;
+                        }
+
+                        command.CommandText = query;
+                        command.CommandType = CommandType.Text;
+                        command.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                    transaction.Rollback();
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
+
 
         private void ButtonCloseOnClick(object sender, RoutedEventArgs e)
         {
             this.NavigationService.GoBack();
         }
+
+        
     }
 }
