@@ -5,6 +5,11 @@ VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsPos", "WindowsPos\WindowsPos.csproj", "{AF6E1497-FF4E-43C3-84FE-B63F7F9139C8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AEC867D5-49F2-40FB-AED0-BEEAF1790D79}"
+	ProjectSection(SolutionItems) = preProject
+		procedures_triggers.sql = procedures_triggers.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

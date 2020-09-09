@@ -14,7 +14,8 @@ namespace WindowsPos.Model
         public Member _member;
         //public List<Table> _tablelist;  // 현재 생성되어있는 테이블 목록
         public DataTable _tablelist;
-        public List<Food> _menulist;
+        //public List<Food> _menulist;
+        public Dictionary<string, int> _productList = new Dictionary<string, int>();
         public MainSystem() {}
 
         public static MainSystem GetInstance
@@ -42,7 +43,7 @@ namespace WindowsPos.Model
 
         public void SetMenuList(List<Food> menulist)
         {
-            _menulist = menulist;
+            //_menulist = menulist;
         }
     }
 }

@@ -3,7 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:src="clr-namespace:WindowsPos"
+      xmlns:src="clr-namespace:WindowsPos.View"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="800"
       Title="OrderPage" Margin="20" Background="#545d6a">
@@ -88,7 +88,7 @@
         <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                        Grid.Row="0" Grid.Column="0">
 
-            <DataGrid DockPanel.Dock="Top" Background="AliceBlue" x:Name="orderList" SelectionMode="Single" CanUserAddRows="false"
+            <DataGrid DockPanel.Dock="Top" Background="AliceBlue" x:Name="orderList" SelectionMode="Extended" CanUserAddRows="false"
                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding }" AutoGenerateColumns="False" 
                       CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" CanUserResizeRows="False">
                 <DataGrid.Resources>
@@ -112,7 +112,6 @@
 
             <Grid DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -149,22 +148,14 @@
                 </Grid.Resources>
 
                 <Button Grid.Row="1" Grid.Column="0" Style="{StaticResource ButtonOption}"
-                        Name="btnDeleteAll">
-                    <Label>
-                        <TextBlock Foreground="Orange">
-                    전체<LineBreak/>취소
-                        </TextBlock>
-                    </Label>
-                </Button>
-                <Button Grid.Row="1" Grid.Column="1" Style="{StaticResource ButtonOption}"
-                        Name="btnDeleteSelection" Click="btnDeleteSelection_Click">
+                        Name="btnDeleteSelection" Click="btnDeleteSelection_Click" HorizontalAlignment="Right" Margin="0,1,1,1" Width="55">
                     <Label>
                         <TextBlock Foreground="Orange">
                     선택<LineBreak/>취소
                         </TextBlock>
                     </Label>
                 </Button>
-                <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource ButtonOption}"
+                <Button Grid.Row="1" Grid.Column="1" Style="{StaticResource ButtonOption}"
                         Name="btnApplyDiscount">
                     <Label>
                         <TextBlock Foreground="Orange">
@@ -172,14 +163,14 @@
                         </TextBlock>
                     </Label>
                 </Button>
+                <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource ButtonOption}" 
+                        Content="수량 +" Name="btnCountPlus" Click="btnCountPlus_Click"/>
                 <Button Grid.Row="1" Grid.Column="3" Style="{StaticResource ButtonOption}" 
-                        Content="수량 +" Name="btnCountPlus"/>
+                        Content="수량 -" Name="btnCountMinus" Click="btnCountMinus_Click"/>
                 <Button Grid.Row="1" Grid.Column="4" Style="{StaticResource ButtonOption}" 
-                        Content="수량 -" Name="btnCountMinus"/>
+                        Content="↑" Name="btnUp" Click="btnUp_Click"/>
                 <Button Grid.Row="1" Grid.Column="5" Style="{StaticResource ButtonOption}" 
-                        Content="↑"/>
-                <Button Grid.Row="1" Grid.Column="6" Style="{StaticResource ButtonOption}" 
-                        Content="↓"/>
+                        Content="↓" Name="btnDown" Click="btnDown_Click"/>
             </Grid>
 
         </DockPanel>
@@ -197,6 +188,7 @@
                     <RowDefinition Height="2*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
+                
                 <Border Grid.Row="0" Background="AliceBlue">
                     <Grid ShowGridLines="True">
                         <Grid.RowDefinitions>
@@ -223,9 +215,12 @@
                         </Border>
 
 
-                        <Label x:Name="txtPrice" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
-                        <Label x:Name="txtDiscountPrice" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
-                        <Label x:Name="txtTotalPrice" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
+                        <Label x:Name="txtPrice" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right" 
+                               VerticalContentAlignment="Center" Margin="10, 0" FontSize="18" Content="{Binding Price}"/>
+                        <Label x:Name="txtDiscountPrice" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"
+                               VerticalContentAlignment="Center" Margin="10, 0" FontSize="18" Content="{Binding Discount}"/>
+                        <Label x:Name="txtTotalPrice" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"
+                               VerticalContentAlignment="Center" Margin="10, 0" FontSize="18" Content="{Binding TotalPrice}"/>
                     </Grid>
                 </Border>
                 

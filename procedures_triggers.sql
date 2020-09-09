@@ -46,19 +46,20 @@ DELIMITER //
 CREATE PROCEDURE SP_DELETE_SALE(
     -- ## sale을 삭제하는 프로시저, 삭제 후 tableorder가 비게 되면
     -- ## tableorder 또한 삭제한다 !!!
-    IN ORDER_NO INT,    
-    IN PRO_CODE INT
+    IN ORDERNO INT,    
+    IN PROCODE INT
 )
 BEGIN
     DELETE FROM 
-        sale
-    WHERE
-        order_no = ORDER_NO AND pro_code = PRO_CODE;
-    
-    DELETE FROM
-        tableorder
-    WHERE
-        (SELECT COUNT(*) FROM sale WHERE order_no = ORDER_NO) = 0;
+        sale 
+    WHERE 
+        order_no = ORDERNO AND pro_code = PROCODE;
+
+    DELETE FROM 
+        tableorder 
+    WHERE 
+        (order_no = ORDERNO 
+        AND (SELECT COUNT(*) FROM sale WHERE order_no = ORDERNO) <= 0);    
 END //
 DELIMITER ;
 
@@ -69,21 +70,20 @@ DROP PROCEDURE IF EXISTS SP_UPDATE_SALE;
 DELIMITER //
 CREATE PROCEDURE SP_UPDATE_SALE(
     -- ## SALE_TOTPRC는 프로시저 내에서 연산하여 기입한다.
-    IN ORDER_NO INT,    
-    IN PRO_CODE INT,
-    IN SALE_COUNT INT,
-    IN SALE_DISCOUNT INT
+    IN ORDERNO INT,    
+    IN PROCODE INT,
+    IN SALECOUNT INT,
+    IN SALEDISCOUNT INT
 )
 BEGIN
     UPDATE 
         sale
     SET
-        sale_count = SALE_COUNT, 
-        sale_discount = NVL(SALE_DISCOUNT, 0),
-        sale_totprc = SALE_COUNT * (SELECT pro_price FROM product WHERE pro_code=NEW.pro_code)
+        sale_count = SALECOUNT, 
+        sale_discount = NVL(SALEDISCOUNT, 0),
+        sale_totprc = SALECOUNT * (SELECT pro_price FROM product WHERE pro_code=PROCODE),
+        order_date = NOW()
     WHERE
-        order_no = ORDER_NO AND pro_code = PRO_CODE;
-
-    
+        order_no = ORDERNO AND pro_code = PROCODE;
 END //
 DELIMITER ;

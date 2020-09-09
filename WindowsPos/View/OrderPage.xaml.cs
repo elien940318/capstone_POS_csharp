@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,7 +10,7 @@ using WindowsPos.Model;
 
 namespace WindowsPos.View
 {
-    public partial class OrderPage : Page
+    public partial class OrderPage : Page, INotifyPropertyChanged
     {
         
         MySqlConnection connection;
@@ -20,11 +21,56 @@ namespace WindowsPos.View
 
         public int TableNum { get; set; }
         public int tempProductCode { get; set; }
-
         public bool firstOrder { get; set; }
 
+
+        private int price;
+        public int Price
+        {
+            get { return price; }
+            set
+            {
+                price = value;
+                OnPropertyChanged("Price");
+            }
+        }
+
+        private int discount;
+        public int Discount
+        {
+            get { return discount; }
+            set
+            {
+                discount = value;
+                OnPropertyChanged("Discount");
+            }
+        }
+
+        private int totalprice;
+        public int TotalPrice
+        {
+            get { return totalprice; }
+            set
+            {
+                totalprice = value;
+                OnPropertyChanged("TotalPrice");
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string propName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propName));
+            }
+        }
+
+
         public OrderPage() 
-        { 
+        {
+            this.DataContext = this;
             InitializeComponent();
             connStr = "Server=175.200.94.253;Port=3306;Database=capstone;Uid=capstone;Pwd=capstone";
             tempProductCode = 0;
@@ -105,6 +151,8 @@ namespace WindowsPos.View
                     Console.WriteLine(ex.ToString());
                 }
             }
+
+            CalculateMoney();
         }
 
         // 여기 수정하자...
@@ -156,7 +204,10 @@ namespace WindowsPos.View
         {
             var btn = sender as CustomButton;
             var size = dtOrderlist.Rows.Count;
-            
+
+            if (dtOrderlist.Rows.Count == 0)
+                tempProductCode = 0;
+
             // 1. temp의 제품코드와 Button의 제품코드가 동일한가?
             if (Int32.Parse(btn.Tag.ToString()) == tempProductCode)
             {
@@ -173,6 +224,9 @@ namespace WindowsPos.View
             // 상품명 수량 총금액 할인금액 주문시간
             dtOrderlist.Rows.Add(btn.Content.ToString(), 1, btn.foodOption.ProductPrice, 0, DateTime.Now.ToString("HH:mm:ss"), btn.Tag, null);
             tempProductCode = Int32.Parse(btn.Tag.ToString());
+
+            CalculateMoney();
+            //dtOrderlist.AcceptChanges();
         }
 
         private void ButtonSaveOnClick(object sender, RoutedEventArgs e)
@@ -261,11 +315,12 @@ namespace WindowsPos.View
 
                                 
                             case DataRowState.Deleted:
+                                dtOrderlist.RejectChanges();
                                 command = new MySqlCommand("SP_DELETE_SALE", connection);
-                                command.Parameters.Add(new MySqlParameter("ORDER_NO", drRow["order_no"]));
-                                command.Parameters.Add(new MySqlParameter("PRO_CODE", drRow["pro_code"]));
-                                command.Parameters["ORDER_NO"].Direction = ParameterDirection.Input;
-                                command.Parameters["PRO_CODE"].Direction = ParameterDirection.Input;
+                                command.Parameters.Add(new MySqlParameter("ORDERNO", drRow["order_no"]));
+                                command.Parameters.Add(new MySqlParameter("PROCODE", drRow["pro_code"]));
+                                command.Parameters["ORDERNO"].Direction = ParameterDirection.Input;
+                                command.Parameters["PROCODE"].Direction = ParameterDirection.Input;
                                 command.CommandType = CommandType.StoredProcedure;
                                 command.ExecuteNonQuery();
                                 break;
@@ -273,14 +328,14 @@ namespace WindowsPos.View
 
                             case DataRowState.Modified:
                                 command = new MySqlCommand("SP_UPDATE_SALE", connection);
-                                command.Parameters.Add(new MySqlParameter("ORDER_NO", drRow["order_no"]));
-                                command.Parameters.Add(new MySqlParameter("PRO_CODE", drRow["pro_code"]));
-                                command.Parameters.Add(new MySqlParameter("SALE_COUNT", drRow["sale_count"]));
-                                command.Parameters.Add(new MySqlParameter("SALE_DISCOUNT", drRow["sale_discount"]));
-                                command.Parameters["ORDER_NO"].Direction = ParameterDirection.Input;
-                                command.Parameters["PRO_CODE"].Direction = ParameterDirection.Input;
-                                command.Parameters["SALE_COUNT"].Direction = ParameterDirection.Input;
-                                command.Parameters["SALE_DISCOUNT"].Direction = ParameterDirection.Input;
+                                command.Parameters.Add(new MySqlParameter("ORDERNO", drRow["order_no"]));
+                                command.Parameters.Add(new MySqlParameter("PROCODE", drRow["pro_code"]));
+                                command.Parameters.Add(new MySqlParameter("SALECOUNT", drRow["sale_count"]));
+                                command.Parameters.Add(new MySqlParameter("SALEDISCOUNT", drRow["sale_discount"]));
+                                command.Parameters["ORDERNO"].Direction = ParameterDirection.Input;
+                                command.Parameters["PROCODE"].Direction = ParameterDirection.Input;
+                                command.Parameters["SALECOUNT"].Direction = ParameterDirection.Input;
+                                command.Parameters["SALEDISCOUNT"].Direction = ParameterDirection.Input;
                                 command.CommandType = CommandType.StoredProcedure;
                                 command.ExecuteNonQuery();
                                 break;
@@ -313,7 +368,85 @@ namespace WindowsPos.View
 
         private void btnDeleteSelection_Click(object sender, RoutedEventArgs e)
         {
+            var btn = sender as CustomButton;
 
+            var index = orderList.SelectedIndex;
+            dtOrderlist.Rows[index].Delete();
+            //dtOrderlist.Rows.RemoveAt(index);
+
+            CalculateMoney();
+
+
+        }
+
+        private void btnCountPlus_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as CustomButton;
+            var index = orderList.SelectedIndex;
+
+
+            dtOrderlist.Rows[index]["sale_count"] = (int)dtOrderlist.Rows[index]["sale_count"] + 1;
+            dtOrderlist.Rows[index]["sale_totprc"] = (int)dtOrderlist.Rows[index]["sale_totprc"] + MainSystem.GetInstance._productList[dtOrderlist.Rows[index]["pro_name"].ToString()];
+            dtOrderlist.Rows[index]["order_date"] = DateTime.Now.ToString("hh:MM:ss");
+
+            CalculateMoney();
+        }
+
+        private void btnCountMinus_Click(object sender, RoutedEventArgs e)
+        {
+            var index = orderList.SelectedIndex;
+
+
+            if (! ((int)dtOrderlist.Rows[index]["sale_count"] == 1)) {
+                dtOrderlist.Rows[index]["sale_count"] = (int)dtOrderlist.Rows[index]["sale_count"] - 1;
+            }
+
+            
+
+            if (! ((int)dtOrderlist.Rows[index]["sale_totprc"] - MainSystem.GetInstance._productList[dtOrderlist.Rows[index]["pro_name"].ToString()] == 0)) {
+                dtOrderlist.Rows[index]["sale_totprc"] = (int)dtOrderlist.Rows[index]["sale_totprc"] - MainSystem.GetInstance._productList[dtOrderlist.Rows[index]["pro_name"].ToString()];
+            }
+
+            CalculateMoney();
+        }
+
+        private void btnDown_Click(object sender, RoutedEventArgs e)
+        {
+            if(orderList.SelectedIndex == -1)
+            {
+                orderList.SelectedIndex = 0;
+            }
+            else if(orderList.SelectedIndex == dtOrderlist.Rows.Count - 1)
+            {
+                orderList.SelectedIndex = 0;
+            }
+            else
+                orderList.SelectedIndex += 1;
+
+            CalculateMoney();
+        }
+
+        private void btnUp_Click(object sender, RoutedEventArgs e)
+        {
+            if (orderList.SelectedIndex == -1)
+            {
+                orderList.SelectedIndex = dtOrderlist.Rows.Count - 1;
+            }
+            else
+                orderList.SelectedIndex -= 1;
+
+            CalculateMoney();
+        }
+
+        private void CalculateMoney()
+        {
+            Price = Discount = TotalPrice = 0;
+            foreach (DataRow drRow in dtOrderlist.Rows)
+            {
+                Price += (int)drRow["sale_totprc"];
+                Discount += (int)drRow["sale_discount"];
+                TotalPrice = Price - Discount;
+            }
         }
     }
 }

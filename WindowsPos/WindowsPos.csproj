@@ -122,6 +122,7 @@
     <Compile Include="Model\Table.cs" />
     <Compile Include="ViewModel\DelegateCommand.cs" />
     <Compile Include="ViewModel\Notifier.cs" />
+    <Compile Include="ViewModel\ViewModelOrderPage.cs" />
     <Compile Include="View\CustomButton.xaml.cs">
       <DependentUpon>CustomButton.xaml</DependentUpon>
     </Compile>

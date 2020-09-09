@@ -32,8 +32,7 @@ namespace WindowsPos.View
                         return;
 
                     GetTableList();
-                    //GetOrderList();
-                    
+                    GetMenuList();
 
                     // 메뉴목록 페이지 출력해주기.
                     this.NavigationService.Navigate(new MenuPage());
@@ -98,19 +97,6 @@ namespace WindowsPos.View
                 dt.Load(command.ExecuteReader());
 
                 MainSystem.GetInstance.SetTableList(dt);
-
-                //using (MySqlDataReader reader = command.ExecuteReader())
-                //{
-                //    // 테이블리스트
-                //    List<Table> tablelist = new List<Table>();
-
-                //    // seat_no | seat_xpos | seat_ypos | usr_id | seat_totprc 
-                //    while (reader.Read()) 
-                //    { 
-                //        tablelist.Add(new Table((int)reader["seat_no"], (int)reader["seat_xpos"], (int)reader["seat_ypos"]));
-                //    }
-                //    MainSystem.GetInstance.SetTableList(tablelist);
-                //}
             }
             catch (Exception exc)
             {
@@ -118,33 +104,22 @@ namespace WindowsPos.View
             }
         }
 
-        //private void GetOrderList()
-        //{
-        //    try
-        //    {
-        //        //| seat_no | seat_xpos | seat_ypos | usr_id | seat_totprc |
-        //        string query = "SELECT seat_no, seat_xpos, seat_ypos FROM seat WHERE usr_id=@usr_id;";
-        //        MySqlCommand command = new MySqlCommand(query, connection);
-        //        var ID = new MySqlParameter("@usr_id", MainSystem.GetInstance._member.Id);
-        //        command.Parameters.Add(ID);
+        private void GetMenuList()
+        {
+            string query = "SELECT pro_name, pro_price FROM product";
+            MySqlCommand command = new MySqlCommand(query, connection);
+            using (var reader = command.ExecuteReader())
+            {
+                //List<Food> tempFoodList = new List<Food>();
 
-        //        using (MySqlDataReader reader = command.ExecuteReader())
-        //        {
-        //            // 테이블리스트
-        //            List<Table> tablelist = new List<Table>();
-
-        //            // seat_no | seat_xpos | seat_ypos | usr_id | seat_totprc 
-        //            while (reader.Read())
-        //            {
-        //                tablelist.Add(new Table((int)reader["seat_no"], (int)reader["seat_xpos"], (int)reader["seat_ypos"]));
-        //            }
-        //            MainSystem.GetInstance.SetTableList(tablelist);
-        //        }
-        //    }
-        //    catch (Exception exc)
-        //    {
-        //        MessageBox.Show(exc.ToString());
-        //    }
-        //}
+                while (reader.Read())
+                {
+                    //Food tempFood = new Food(reader.GetInt32(0), reader.GetString(1), reader.GetInt32(2), reader.GetInt32(3));
+                    //tempFoodList.Add(tempFood);
+                    MainSystem.GetInstance._productList.Add(reader.GetString(0), reader.GetInt32(1));
+                }
+                //MainSystem.GetInstance.SetMenuList(tempFoodList);
+            }
+        }
     }
 }
