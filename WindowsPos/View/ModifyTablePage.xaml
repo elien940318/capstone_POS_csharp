@@ -82,7 +82,7 @@
             <Button Style="{StaticResource ButtonOption}" Height="50" Content="저장" Name="btnSave" Click="ButtonSaveOnClick"/>
             <Button Style="{StaticResource ButtonOption}" Height="50" Content="닫기" Name="btnClose" Click="ButtonCloseOnClick"/>
         </StackPanel>
-        <Canvas Name="DesigningCanvas" Background="#FFEBEBEB" Grid.Column="1"/>
+        <Canvas Name="DesigningCanvas" Background="#FF263644" Grid.Column="1"/>
 
     </Grid>
 </Page>

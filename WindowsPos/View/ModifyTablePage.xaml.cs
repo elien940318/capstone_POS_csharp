@@ -154,14 +154,17 @@ namespace WindowsPos.View
 
         private void btnDeleteClicked(object sender, RoutedEventArgs e)
         {
+            TableButton btn = sender as TableButton;
             foreach (Control control in DesigningCanvas.Children)
             {
                 if (control != MovingObject)
                     continue;
                 DesigningCanvas.Children.Remove(control);
+
+                //IEnumerable<DataRow> drRows = dt.Select().Where(x => x["table_num"].ToString() == btn.TableNum.ToString());
+                
                 return;
             }
-
         }
 
         
@@ -182,6 +185,7 @@ namespace WindowsPos.View
                         query += "INSERT INTO seat VALUES (" + dr[0] + ", " + dr[1] + ", " + dr[2] + ", '" + MainSystem.GetInstance._member.Id + "');";
                         break;
                     case DataRowState.Deleted:
+                        query += "";
                         break;
                     case DataRowState.Modified:
                         query += "UPDATE seat SET seat_xpos=" + dr[1] + ", seat_ypos=" + dr[2] + " WHERE seat_no=" + dr[0] + " AND usr_id='" + MainSystem.GetInstance._member.Id + "';";

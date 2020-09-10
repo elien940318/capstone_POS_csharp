@@ -13,7 +13,7 @@
             <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Canvas Name="DesigningCanvas" Background="#FFEBEBEB" Grid.Column="0"/>
+        <Canvas Name="DesigningCanvas" Background="#FF263644" Grid.Column="0"/>
         
         <!--
         <ItemsControl ItemsSource="{Binding TableList}" Grid.Column="0">

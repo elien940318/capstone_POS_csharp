@@ -148,21 +148,10 @@
                 </Grid.Resources>
 
                 <Button Grid.Row="1" Grid.Column="0" Style="{StaticResource ButtonOption}"
-                        Name="btnDeleteSelection" Click="btnDeleteSelection_Click" HorizontalAlignment="Right" Margin="0,1,1,1" Width="55">
-                    <Label>
-                        <TextBlock Foreground="Orange">
-                    선택<LineBreak/>취소
-                        </TextBlock>
-                    </Label>
-                </Button>
+                        Name="btnDeleteSelection" Click="btnDeleteSelection_Click" HorizontalAlignment="Right" 
+                        Margin="0,1,1,1" Width="55" Content="선택&#10;취소" Foreground="Orange" Padding="10"/>
                 <Button Grid.Row="1" Grid.Column="1" Style="{StaticResource ButtonOption}"
-                        Name="btnApplyDiscount">
-                    <Label>
-                        <TextBlock Foreground="Orange">
-                    할인<LineBreak/>적용
-                        </TextBlock>
-                    </Label>
-                </Button>
+                        Name="btnApplyDiscount" Content="할인&#10;적용" Foreground="Orange" />
                 <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource ButtonOption}" 
                         Content="수량 +" Name="btnCountPlus" Click="btnCountPlus_Click"/>
                 <Button Grid.Row="1" Grid.Column="3" Style="{StaticResource ButtonOption}" 
@@ -229,11 +218,14 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" FontWeight="Bold"  Content="현금&#10;결제" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="Auto" Width="Auto"/>
-                    <Button Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="Auto" Width="Auto">
+                    <Button Grid.Column="0" FontWeight="Bold"  Content="현금&#10;결제" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                            Height="Auto" Width="Auto" Foreground="Orange" Background="#1A1B2A" Name="btnPayCash" Click="btnPayCash_Click"/>
+                    <Button Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="Auto" Width="Auto"
+                            Name = "btnKakaopay" Click="btnKakaopay_Click">
                         <Image Source="/image/logo_kakao.png" 
                                Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Path=ActualWidth}"
-                               Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Path=ActualHeight}"/>
+                               Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Path=ActualHeight}"
+/>
                     </Button>
                 </Grid>
             </Grid>

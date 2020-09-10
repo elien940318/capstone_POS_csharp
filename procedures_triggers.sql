@@ -81,8 +81,7 @@ BEGIN
     SET
         sale_count = SALECOUNT, 
         sale_discount = NVL(SALEDISCOUNT, 0),
-        sale_totprc = SALECOUNT * (SELECT pro_price FROM product WHERE pro_code=PROCODE),
-        order_date = NOW()
+        sale_totprc = SALECOUNT * (SELECT pro_price FROM product WHERE pro_code=PROCODE)
     WHERE
         order_no = ORDERNO AND pro_code = PROCODE;
 END //

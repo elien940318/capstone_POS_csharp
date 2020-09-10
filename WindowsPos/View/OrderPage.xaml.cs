@@ -1,8 +1,12 @@
 ﻿using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.IO;
+using System.Net;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -209,7 +213,7 @@ namespace WindowsPos.View
                 tempProductCode = 0;
 
             // 1. temp의 제품코드와 Button의 제품코드가 동일한가?
-            if (Int32.Parse(btn.Tag.ToString()) == tempProductCode)
+            if (Int32.Parse(btn.Tag.ToString()) == tempProductCode && dtOrderlist.Rows[size - 1]["pro_name"].ToString() == btn.Content.ToString())
             {
                 // 수량과 총가격을 계산하자.
                 dtOrderlist.Rows[size - 1]["sale_count"] = (int)dtOrderlist.Rows[size - 1]["sale_count"] + 1;
@@ -375,8 +379,6 @@ namespace WindowsPos.View
             //dtOrderlist.Rows.RemoveAt(index);
 
             CalculateMoney();
-
-
         }
 
         private void btnCountPlus_Click(object sender, RoutedEventArgs e)
@@ -443,10 +445,91 @@ namespace WindowsPos.View
             Price = Discount = TotalPrice = 0;
             foreach (DataRow drRow in dtOrderlist.Rows)
             {
+                if (drRow.RowState == DataRowState.Deleted)
+                {
+                    continue;
+                }
                 Price += (int)drRow["sale_totprc"];
                 Discount += (int)drRow["sale_discount"];
                 TotalPrice = Price - Discount;
             }
+        }
+
+        private void btnKakaopay_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string url = "https://kapi.kakao.com/v1/payment/ready";
+
+                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+                req.Method = "POST";
+                req.Host = "kapi.kakao.com";
+                req.Headers.Add("Authorization", "KakaoAK 82df68f87186848290c1d00d2c341cc2");
+                req.ContentType = "application/x-www-form-urlencoded;charset=utf-8";
+
+                List<KeyValuePair<string, object>> data = new List<KeyValuePair<string, object>>()
+                {
+                    new KeyValuePair<string, object>("cid", "TC0ONETIME"),
+                    new KeyValuePair<string, object>("partner_order_id", "partner_order_id"),
+                    new KeyValuePair<string, object>("partner_user_id", "partner_user_id"),
+                    new KeyValuePair<string, object>("item_name", "JinjuBeer"),
+                    new KeyValuePair<string, object>("quantity", 1),
+                    new KeyValuePair<string, object>("total_amount", 22500),
+                    new KeyValuePair<string, object>("tax_free_amount", 20455),
+                    //new KeyValuePair<string, object>("approval_url", "https://elienDesktop.iptime.org:3515"),
+                    //new KeyValuePair<string, object>("fail_url", "https://elienDesktop.iptime.org:3515"),
+                    //new KeyValuePair<string, object>("cancel_url", "https://elienDesktop.iptime.org:3515"),
+                    new KeyValuePair<string, object>("approval_url", "https://localhost:8080"),
+                    new KeyValuePair<string, object>("fail_url", "https://localhost:8080"),
+                    new KeyValuePair<string, object>("cancel_url", "https://localhost:8080"),
+                };
+
+                StringBuilder builder = new StringBuilder();
+
+                foreach (KeyValuePair<string, object> kvp in data)
+                    builder.Append(kvp.Key + "=" + kvp.Value + "&");
+
+                // 여기서 builder 디버깅 보자.
+                // data들을 UTF8형식으로 바이트 변환함.            
+                byte[] bytes = Encoding.UTF8.GetBytes(builder.ToString());
+                req.ContentLength = bytes.Length;
+
+                // HttpWebRequest req에 변환된 데이터들을 넣자.
+                using (Stream reqStream = req.GetRequestStream())
+                    reqStream.Write(bytes, 0, bytes.Length);
+
+                // 받은 내용 저장 변수
+                string responseText = string.Empty;
+
+                // HttpWebRequest req로부터 response한 결과 클래스
+                using (var resp = req.GetResponse())
+                {
+                    Stream respStream = resp.GetResponseStream();
+                    StreamReader reader = new StreamReader(respStream);
+
+                    string responseFromServer = reader.ReadToEnd();
+
+                    Console.WriteLine(responseFromServer);
+                }
+            }
+            catch (WebException ex)
+            {
+                //var response = (HttpWebResponse)ex.Response;
+                var resp = new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
+
+                dynamic obj = JsonConvert.DeserializeObject(resp);
+                var messagefromserver = obj.error.message;
+            }
+        }
+
+        private void btnPayCash_Click(object sender, RoutedEventArgs e)
+        {
+            CashPage cashPage = new CashPage();
+            cashPage.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            cashPage.WindowState = WindowState.Normal;
+            cashPage.Owner = System.Windows.Application.Current.MainWindow;
+            cashPage.ShowDialog();
+            this.NavigationService.GoBack();
         }
     }
 }
