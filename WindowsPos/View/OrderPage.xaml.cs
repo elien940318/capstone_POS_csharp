@@ -218,7 +218,7 @@ namespace WindowsPos.View
                 // 수량과 총가격을 계산하자.
                 dtOrderlist.Rows[size - 1]["sale_count"] = (int)dtOrderlist.Rows[size - 1]["sale_count"] + 1;
                 dtOrderlist.Rows[size - 1]["sale_totprc"] = (int)dtOrderlist.Rows[size - 1]["sale_totprc"] + btn.foodOption.ProductPrice;
-
+                CalculateMoney();
                 return;
             }
 

@@ -49,5 +49,10 @@ namespace WindowsPos.View
         {
 
         }
+
+        private void ButtonLogoutOnClick(object sender, RoutedEventArgs e)
+        {
+            this.NavigationService.GoBack();
+        }
     }
 }

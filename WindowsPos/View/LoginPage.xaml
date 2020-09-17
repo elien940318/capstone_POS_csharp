@@ -5,7 +5,8 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WindowsPos.View"
       mc:Ignorable="d" 
-      d:DesignHeight="600" d:DesignWidth="800">
+      d:DesignHeight="600" d:DesignWidth="800"
+      Loaded="Page_Loaded">
 
 
     <Grid Margin="20">
@@ -33,7 +34,7 @@
                 <TextBox x:Name="txtUsername" Background="#545d6a" Foreground="White" FontSize="18"/>
                 <Label Content="Password" Foreground="White"/>
                 <PasswordBox x:Name="txtPassword" Background="#545d6a" Foreground="White" FontSize="18"/>
-                <Button x:Name="btnSubmit" Content="Submit" Margin="60 10" Background="#545d6a" Foreground="White"
+                <Button x:Name="btnSubmit" Content="로그인" Margin="60 10" Background="#545d6a" Foreground="White"
                     Click="SubmitOnClick"/>
                 <TextBox x:Name="txtboxLog" Background="White" Height="100" 
                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
