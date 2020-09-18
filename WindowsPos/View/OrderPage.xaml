@@ -151,7 +151,7 @@
                         Name="btnDeleteSelection" Click="btnDeleteSelection_Click" HorizontalAlignment="Right" 
                         Margin="0,1,1,1" Width="55" Content="선택&#10;취소" Foreground="Orange" Padding="10"/>
                 <Button Grid.Row="1" Grid.Column="1" Style="{StaticResource ButtonOption}"
-                        Name="btnApplyDiscount" Content="할인&#10;적용" Foreground="Orange" />
+                        Name="btnApplyDiscount" Content="할인&#10;적용" Foreground="Orange" Click="btnApplyDiscount_Click"/>
                 <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource ButtonOption}" 
                         Content="수량 +" Name="btnCountPlus" Click="btnCountPlus_Click"/>
                 <Button Grid.Row="1" Grid.Column="3" Style="{StaticResource ButtonOption}" 
@@ -248,30 +248,28 @@
 
 
                     <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="5,3" BorderBrush="#CEE3F6" BorderThickness="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                        <TextBox Name="btnKeyValue" Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                            VerticalContentAlignment="Center" 
-                            HorizontalContentAlignment="Right" 
-                            FontSize="14"/>
+                        <TextBox Name="txtCalcValue" Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                 VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="14" Text="{Binding CalcText}"/>
                     </Border>
 
-                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey7" Grid.Row="1" Grid.Column="0" Content="7"/>
-                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey8" Grid.Row="1" Grid.Column="1" Content="8"/>
-                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey9" Grid.Row="1" Grid.Column="2" Content="9"/>
-
-                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey4" Grid.Row="2" Grid.Column="0" Content="4"/>
-                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey5" Grid.Row="2" Grid.Column="1" Content="5"/>
-                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey6" Grid.Row="2" Grid.Column="2" Content="6"/>
-
-                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey1" Grid.Row="3" Grid.Column="0" Content="1"/>
-                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey2" Grid.Row="3" Grid.Column="1" Content="2"/>
-                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey3" Grid.Row="3" Grid.Column="2" Content="3"/>
-
-                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey0" Grid.Row="4" Grid.Column="0" Content="0"/>
-                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKey00" Grid.Row="4" Grid.Column="1" Content="00"/>
-                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKeyClr" Grid.Row="4" Grid.Column="2" Content="CLR"/>
-
-                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKeyBackspc" Grid.Row="5" Grid.Column="0" Content="&lt;" />
-                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Name="btnKeyEnter" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Content="Enter" />
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Click="btnCalcClick" Name="btnKey7" Grid.Row="1" Grid.Column="0" Content="7"/>
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Click="btnCalcClick" Name="btnKey8" Grid.Row="1" Grid.Column="1" Content="8"/>
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Click="btnCalcClick" Name="btnKey9" Grid.Row="1" Grid.Column="2" Content="9"/>
+                                                                                                                       
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Click="btnCalcClick" Name="btnKey4" Grid.Row="2" Grid.Column="0" Content="4"/>
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Click="btnCalcClick" Name="btnKey5" Grid.Row="2" Grid.Column="1" Content="5"/>
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Click="btnCalcClick" Name="btnKey6" Grid.Row="2" Grid.Column="2" Content="6"/>
+                                                                                                                
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Click="btnCalcClick" Name="btnKey1" Grid.Row="3" Grid.Column="0" Content="1"/>
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Click="btnCalcClick" Name="btnKey2" Grid.Row="3" Grid.Column="1" Content="2"/>
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Click="btnCalcClick" Name="btnKey3" Grid.Row="3" Grid.Column="2" Content="3"/>
+                                                                                                                         
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Click="btnCalcClick" Name="btnKey0" Grid.Row="4" Grid.Column="0" Content="0"/>
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Click="btnCalcClick" Name="btnKey00" Grid.Row="4" Grid.Column="1" Content="00"/>
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Click="btnCalcClick" Name="btnKeyClr" Grid.Row="4" Grid.Column="2" Content="CLR"/>
+                                                                                                                     
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Click="btnCalcClick" Name="btnKeyBackspc" Grid.Row="5" Grid.Column="0" Content="&lt;" />
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource ButtonOption}" Click="btnCalcClick" Name="btnKeyEnter" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Content="Enter" />
 
                 </Grid>
             </Grid>

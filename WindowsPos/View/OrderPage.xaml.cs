@@ -19,9 +19,24 @@ namespace WindowsPos.View
         
         MySqlConnection connection;
         MySqlCommand command;
+
+        // pro_name, sale_count, sale_totprc, sale_discount, order_date, pro_code, order_no
         DataTable dtOrderlist;  // 메뉴 주문 리스트
 
         string connStr;
+
+
+        private string calctext;
+
+        public string CalcText
+        {
+            get { return calctext; }
+            set
+            {
+                calctext = value;
+                OnPropertyChanged("CalcText");
+            }
+        }
 
         public int TableNum { get; set; }
         public int tempProductCode { get; set; }
@@ -78,6 +93,7 @@ namespace WindowsPos.View
             InitializeComponent();
             connStr = "Server=175.200.94.253;Port=3306;Database=capstone;Uid=capstone;Pwd=capstone";
             tempProductCode = 0;
+            CalcText = string.Empty;
         }
 
         public OrderPage(TableButton btn) : this()
@@ -530,6 +546,58 @@ namespace WindowsPos.View
             cashPage.Owner = System.Windows.Application.Current.MainWindow;
             cashPage.ShowDialog();
             this.NavigationService.GoBack();
+        }
+
+        // 123456789 0 00 clr < enter
+        private void btnCalcClick(object sender, RoutedEventArgs e)
+        {
+            Button btn = e.Source as Button;
+
+            if (btn == null)
+                return;
+
+            string strButton = btn.Content.ToString();
+            char chButton = strButton[0];
+            
+            if (strButton == "Enter")
+                chButton = '=';
+
+            if (Char.IsNumber(chButton))
+            {
+                CalcText += strButton;
+            }
+            else
+            {
+                switch (chButton)
+                {
+                    case 'E':
+                        break;
+                    case '<':                        
+                        CalcText = CalcText.Substring(0, CalcText.Length - 1);
+                        break;
+                    case 'C':
+                        CalcText = string.Empty;
+                        break;
+                    default:                        
+                        break;
+                }
+            }
+        }
+
+        private void btnApplyDiscount_Click(object sender, RoutedEventArgs e)
+        {
+            var index = orderList.SelectedIndex;
+
+            //dtOrderlist.Rows[index]["sale_count"] = (int)dtOrderlist.Rows[index]["sale_count"] + 1;
+            //dtOrderlist.Rows[index]["sale_totprc"] = (int)dtOrderlist.Rows[index]["sale_totprc"] + MainSystem.GetInstance._productList[dtOrderlist.Rows[index]["pro_name"].ToString()];
+            //dtOrderlist.Rows[index]["order_date"] = DateTime.Now.ToString("hh:MM:ss");
+            if (CalcText != string.Empty)
+            {
+                dtOrderlist.Rows[index]["sale_discount"] = CalcText;
+            }
+            
+
+
         }
     }
 }
