@@ -15,6 +15,7 @@ namespace WindowsPos.Model
         private string email;
         private DateTime sign;
 
+        
         public Member(string id, string pw)
         {
             this.id = id;

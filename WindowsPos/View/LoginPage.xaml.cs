@@ -116,7 +116,7 @@ namespace WindowsPos.View
                 {
                     //Food tempFood = new Food(reader.GetInt32(0), reader.GetString(1), reader.GetInt32(2), reader.GetInt32(3));
                     //tempFoodList.Add(tempFood);
-                    MainSystem.GetInstance._productList.Add(reader.GetString(0), reader.GetInt32(1));
+                        MainSystem.GetInstance._productList.Add(reader.GetString(0), reader.GetInt32(1));
                 }
                 //MainSystem.GetInstance.SetMenuList(tempFoodList);
             }

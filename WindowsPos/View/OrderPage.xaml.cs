@@ -112,7 +112,9 @@ namespace WindowsPos.View
                     command.Parameters["TABLE_NUM"].Direction = ParameterDirection.Input;
 
                     dtOrderlist = new DataTable();
+                    // 클래스화 하여 넣어주자... Discount나 Count수량 변화할때 자동으로 TotPrice 변화하도록......                    
                     dtOrderlist.Load(command.ExecuteReader());
+
                     orderList.DataContext = dtOrderlist.DefaultView;
 
                     //---------------------------------------------------------------
@@ -288,8 +290,7 @@ namespace WindowsPos.View
 
 
                         // tableorder: usr_id, seat_no
-                        // sale: order_no, pro_code
-
+                        // sale: order_no, pro_code                        
                         
                         switch (drRow.RowState)
                         {
@@ -404,7 +405,7 @@ namespace WindowsPos.View
 
 
             dtOrderlist.Rows[index]["sale_count"] = (int)dtOrderlist.Rows[index]["sale_count"] + 1;
-            dtOrderlist.Rows[index]["sale_totprc"] = (int)dtOrderlist.Rows[index]["sale_totprc"] + MainSystem.GetInstance._productList[dtOrderlist.Rows[index]["pro_name"].ToString()];
+            dtOrderlist.Rows[index]["sale_totprc"] = MainSystem.GetInstance._productList[dtOrderlist.Rows[index]["pro_name"].ToString()] * (int)dtOrderlist.Rows[index]["sale_count"] - (int)dtOrderlist.Rows[index]["sale_discount"];
             dtOrderlist.Rows[index]["order_date"] = DateTime.Now.ToString("hh:MM:ss");
 
             CalculateMoney();
@@ -422,7 +423,7 @@ namespace WindowsPos.View
             
 
             if (! ((int)dtOrderlist.Rows[index]["sale_totprc"] - MainSystem.GetInstance._productList[dtOrderlist.Rows[index]["pro_name"].ToString()] == 0)) {
-                dtOrderlist.Rows[index]["sale_totprc"] = (int)dtOrderlist.Rows[index]["sale_totprc"] - MainSystem.GetInstance._productList[dtOrderlist.Rows[index]["pro_name"].ToString()];
+                dtOrderlist.Rows[index]["sale_totprc"] = MainSystem.GetInstance._productList[dtOrderlist.Rows[index]["pro_name"].ToString()] * (int)dtOrderlist.Rows[index]["sale_count"] - (int)dtOrderlist.Rows[index]["sale_discount"];
             }
 
             CalculateMoney();
@@ -588,16 +589,18 @@ namespace WindowsPos.View
         {
             var index = orderList.SelectedIndex;
 
-            //dtOrderlist.Rows[index]["sale_count"] = (int)dtOrderlist.Rows[index]["sale_count"] + 1;
-            //dtOrderlist.Rows[index]["sale_totprc"] = (int)dtOrderlist.Rows[index]["sale_totprc"] + MainSystem.GetInstance._productList[dtOrderlist.Rows[index]["pro_name"].ToString()];
-            //dtOrderlist.Rows[index]["order_date"] = DateTime.Now.ToString("hh:MM:ss");
+            if (Int32.Parse(CalcText) > (int)dtOrderlist.Rows[index]["sale_totprc"])
+            {
+                
+                return;
+            }            
             if (CalcText != string.Empty)
             {
                 dtOrderlist.Rows[index]["sale_discount"] = CalcText;
+                dtOrderlist.Rows[index]["sale_totprc"] = MainSystem.GetInstance._productList[dtOrderlist.Rows[index]["pro_name"].ToString()] * (int)dtOrderlist.Rows[index]["sale_count"] - (int)dtOrderlist.Rows[index]["sale_discount"];
+                dtOrderlist.Rows[index]["order_date"] = DateTime.Now.ToString("hh:MM:ss");
+                CalcText = string.Empty;
             }
-            
-
-
         }
     }
 }

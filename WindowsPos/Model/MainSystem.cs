@@ -16,16 +16,27 @@ namespace WindowsPos.Model
         public DataTable _tablelist;
         //public List<Food> _menulist;
         public Dictionary<string, int> _productList = new Dictionary<string, int>();
-        public MainSystem() {}
+        public MainSystem(){}
 
         public static MainSystem GetInstance
         {
             get
             {
                 if (_instance == null)
-                    _instance = new MainSystem();
+                    _instance = new MainSystem();               
                 return _instance;
+                
             }            
+            
+        }
+
+        public void ReleaseInstance()
+        {
+            // 로그아웃시 인스턴스 소멸 해줄것...
+            if (_instance != null)
+            {
+                _instance = null;
+            }           
         }
 
         public void SetMember(DataRow dtRow)

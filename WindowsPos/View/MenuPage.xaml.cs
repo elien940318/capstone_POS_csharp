@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WindowsPos.Model;
 
 namespace WindowsPos.View
 {
@@ -52,6 +53,7 @@ namespace WindowsPos.View
 
         private void ButtonLogoutOnClick(object sender, RoutedEventArgs e)
         {
+            MainSystem.GetInstance.ReleaseInstance();
             this.NavigationService.GoBack();
         }
     }
