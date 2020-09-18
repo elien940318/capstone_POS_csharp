@@ -51,10 +51,10 @@
                     <TextBlock Text="영업" TextAlignment="Center" FontSize="40"/>
                 </StackPanel>
             </Button>
-            <Button Grid.Row="1" Style="{StaticResource btnOption}" Click="ButtonMoneyOnClick">
+            <Button Grid.Row="1" Style="{StaticResource btnOption}" Click="ButtonAnalysisOnClick">
                 <StackPanel>
                     <Image Source="/image/icon_money.png" Width="120" />
-                    <TextBlock Text="준비금 등록" TextAlignment="Center" FontSize="40"/>
+                    <TextBlock Text="매출 관리" TextAlignment="Center" FontSize="40"/>
                 </StackPanel>
             </Button>
         </Grid>
@@ -76,10 +76,10 @@
                     <TextBlock Text="메뉴 설정" TextAlignment="Center" FontSize="30"/>
                 </StackPanel>
             </Button>
-            <Button Grid.Row="2" Style="{StaticResource btnOption}" Click="ButtonAnalysisOnClick">
+            <Button Grid.Row="2" Style="{StaticResource btnOption}" Click="ButtonLogoutOnClick">
                 <StackPanel>
                     <Image Source="/image/icon_analysis.png" Width="100" />
-                    <TextBlock Text="매출 관리" TextAlignment="Center" FontSize="30"/>
+                    <TextBlock Text="로그아웃" TextAlignment="Center" FontSize="30"/>
                 </StackPanel>
             </Button>
         </Grid>

@@ -121,5 +121,13 @@ namespace WindowsPos.View
                 //MainSystem.GetInstance.SetMenuList(tempFoodList);
             }
         }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+
+            txtboxLog.Text = "";
+            txtPassword.Password = "";
+            txtUsername.Text = "";
+        }
     }
 }
